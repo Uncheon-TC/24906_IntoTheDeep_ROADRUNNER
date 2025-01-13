@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.auto_test;
+/*package org.firstinspires.ftc.teamcode.drive.auto_test;
 
 import androidx.annotation.NonNull;
 
@@ -230,5 +230,10 @@ public class roadrunner_test extends LinearOpMode{
 
     }
 
+   @Override
+    public void runO0Mode() {
 
-}
+   }
+
+
+} */

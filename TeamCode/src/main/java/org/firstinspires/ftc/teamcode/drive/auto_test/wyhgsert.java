@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 @Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
 @Disabled
-public class BlueSideTestAuto extends LinearOpMode {
+public class wyhgsert extends LinearOpMode {
     public class Lift {
         private DcMotorEx lift;
 

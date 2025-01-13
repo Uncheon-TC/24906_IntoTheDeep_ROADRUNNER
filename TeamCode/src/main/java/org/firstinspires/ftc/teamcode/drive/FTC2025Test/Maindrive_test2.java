@@ -18,9 +18,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 //TODO: install entire servo and tuning
 
-@TeleOp (name = "Main drive test", group = "2024-2025 Test OP")
+@TeleOp (name = "Main drive test2", group = "2024-2025 Test OP")
 
-public class Maindrive_test extends LinearOpMode {
+public class Maindrive_test2 extends LinearOpMode {
 
     //pid settings
     private PIDController controller;
@@ -116,6 +116,9 @@ public class Maindrive_test extends LinearOpMode {
         double H_Grip_OPEN = 0.55;
         double H_Grip_CLOSE = 0.85;
 
+        boolean HG_OPEN = true;
+        boolean VG_OPEN = true;
+
         //TODO: find Horizon Griper value
 
         int Low_basket = 2400;
@@ -184,7 +187,7 @@ public class Maindrive_test extends LinearOpMode {
                 V_grip.setPosition(V_Grip_CLOSE);
                 H_grip.setPosition(H_Grip_CLOSE);
 
-                V_wristL.setPosition(V_wrist_trans_temp);
+                V_wristL.setPosition(V_wrist_trans);
 
                 angle_control(H_angle_trans);
                 wrist_control(H_wristL_POS180, H_wristR_POS180);
@@ -211,6 +214,8 @@ public class Maindrive_test extends LinearOpMode {
             //
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
+
+
 
             //
             double y = -gamepad1.left_stick_y;  //y value is reversed
@@ -244,68 +249,107 @@ public class Maindrive_test extends LinearOpMode {
 
             //continue main coading
 
-
-            //
-            if (rising_edge(currentGamepad2.dpad_up, previousGamepad2.dpad_up)) {
+            if (rising_edge(currentGamepad1.dpad_up, previousGamepad1.dpad_up)) {
                 H_length.setPosition(H_length_OUT);
+                angle_control(H_angle_Ready);
+                H_grip.setPosition(H_Grip_OPEN);
+                wrist_control(H_wristL_POS90, H_wristR_POS90);
 
-                if (pick_status == 0) {
-                    angle_control(H_angle_Ready);
-                    wrist_control(H_wristL_POS90, H_wristR_POS90);
+                V_wristL.setPosition(V_wrist_trans);
 
-                    pick_status = 1;
-                } else if (pick_status == 1) {
-                    angle_control(H_angle_pickup);
+                //HG_OPEN = true;
+            }
 
-                    pick_status = 0;
+            if (rising_edge(currentGamepad1.x, previousGamepad1.x)) {
+                angle_control(H_angle_pickup);
+
+            }
+
+            if (rising_edge(currentGamepad1.left_bumper, previousGamepad1.left_bumper)) {
+                H_grip.setPosition(H_Grip_CLOSE);
+
+            }
+
+            if (rising_edge(currentGamepad1.right_bumper, previousGamepad1.right_bumper)) {
+                H_grip.setPosition(H_Grip_OPEN);
+
+            }
+
+            if (rising_edge(currentGamepad1.y, previousGamepad1.y)) {
+                angle_control(H_angle_trans);
+                wrist_control(H_wristL_POS180, H_wristR_POS180);
+                V_wristL.setPosition(V_wrist_trans);
+                V_grip.setPosition(V_Grip_OPEN);
+
+                //VG_OPEN = true;
+            }
+
+            if (rising_edge(currentGamepad1.dpad_down, previousGamepad1.dpad_down)) {
+                H_length.setPosition(H_length_IN);
+            }
+
+            if (rising_edge(currentGamepad1.b, previousGamepad1.b)) {
+                H_grip.setPosition(H_Grip_OPEN);
+                V_grip.setPosition(V_Grip_CLOSE);
+
+                //HG_OPEN = true;
+                //VG_OPEN = false;
+            }
+
+            if (rising_edge(currentGamepad1.dpad_left, previousGamepad1.dpad_left)) {
+                H_wristL_target = H_wristL.getPosition() + interval;
+                H_wristR_target = H_wristR.getPosition() - interval;
+
+                if (H_wristL_target > 1) {
+                    H_wristL_target = 1;
                 }
 
+                if (H_wristR_target < 0) {
+                    H_wristR_target = 0;
+                }
 
+                wrist_control(H_wristL_target, H_wristR_target);
             }
 
-            if(rising_edge(currentGamepad2.dpad_down, previousGamepad2.dpad_down)) {
+            if (rising_edge(currentGamepad1.dpad_right, previousGamepad1.dpad_right)) {
+                H_wristL_target = H_wristL.getPosition() - interval;
+                H_wristR_target = H_wristR.getPosition() + interval;
 
-                V_wristL.setPosition(V_wrist_trans_temp);
+                if (H_wristL_target < 0) {
+                    H_wristL_target = 0;
+                }
 
-                H_length.setPosition(H_length_IN);
-                angle_control(H_angle_trans);
+                if (H_wristR_target > 1) {
+                    H_wristR_target = 1;
+                }
 
-                wrist_control(H_wristL_POS180, H_wristR_POS180);
-                pick_status = 0;
+                wrist_control(H_wristL_target, H_wristR_target);
             }
 
-            if (gamepad2.right_bumper) {
-                V_grip.setPosition(V_Grip_OPEN);
-            } else {
+            if (rising_edge(currentGamepad2.left_bumper, previousGamepad2.left_bumper)) {
                 V_grip.setPosition(V_Grip_CLOSE);
+
             }
 
-            if (gamepad2.left_bumper) {
-                H_grip.setPosition(H_Grip_OPEN);
-            } else {
-                H_grip.setPosition(H_Grip_CLOSE);
+            if (rising_edge(currentGamepad2.right_bumper, previousGamepad2.right_bumper)) {
+                V_grip.setPosition(V_Grip_OPEN);
+
             }
 
             if (rising_edge(currentGamepad2.a, previousGamepad2.a)) {
                 arm_target = clip_pick;
 
-                if (trans_status == 0) {
-                    V_wristL.setPosition(V_wrist_trans_temp);
-                    trans_status = 1;
-                } else if (trans_status == 1) {
-                    V_wristL.setPosition(V_wrist_trans);
-                    trans_status = 0;
-                }
+                V_wristL.setPosition(V_wrist_trans);
 
                 chamber_status = 0;
             }
+
 
             if (rising_edge(currentGamepad2.b, previousGamepad2.b)) {
                 arm_target = High_basket;
                 V_wristL.setPosition(V_wrist_basket);
             }
 
-            //TODO: chamber_High_hang find
             if (rising_edge(currentGamepad2.x, previousGamepad2.x)) {
 
                 if (chamber_status == 0) {
@@ -328,41 +372,15 @@ public class Maindrive_test extends LinearOpMode {
                 V_wristL.setPosition(V_wrist_clip_pickup);
             }
 
-            if (rising_edge(currentGamepad2.dpad_left, previousGamepad2.dpad_left)) {
-                H_wristL_target = H_wristL.getPosition() + interval;
-                H_wristR_target = H_wristR.getPosition() - interval;
 
-                if (H_wristL_target > 1) {
-                    H_wristL_target = 1;
-                }
 
-                if (H_wristR_target < 0) {
-                    H_wristR_target = 0;
-                }
-
-                wrist_control(H_wristL_target, H_wristR_target);
-            }
-
-            if (rising_edge(currentGamepad2.dpad_right, previousGamepad2.dpad_right)) {
-                H_wristL_target = H_wristL.getPosition() - interval;
-                H_wristR_target = H_wristR.getPosition() + interval;
-
-                if (H_wristL_target < 0) {
-                    H_wristL_target = 0;
-                }
-
-                if (H_wristR_target > 1) {
-                    H_wristR_target = 1;
-                }
-
-                wrist_control(H_wristL_target, H_wristR_target);
-            }
 
             //telemetry settings
             telemetry.addData("ArmPos ", ArmPos);
             telemetry.addData("Target Pos ", arm_target);
             telemetry.addLine();
-            //telemetry.addData("V_");
+            //telemetry.addData("HG", HG_OPEN);
+            //telemetry.addData("VG", VG_OPEN);
             telemetry.update();  //update telemetry, end of line
         }
 
