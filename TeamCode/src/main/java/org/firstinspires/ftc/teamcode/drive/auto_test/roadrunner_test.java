@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Action;
 // Non-RR imports
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -433,26 +434,56 @@ public class roadrunner_test extends LinearOpMode{
     }
 
    @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(0));
+       Pose2d initialPose = new Pose2d(-20, 61, Math.PI / 2);
        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
        H_factor h_factor = new H_factor(hardwareMap);
        V_factor v_factor = new V_factor(hardwareMap);
        Grip_factor grip_factor = new Grip_factor(hardwareMap);
 
+       waitForStart();
+
         if (isStopRequested()) return;
 
        Actions.runBlocking(
-               new SequentialAction(
+               drive.actionBuilder(initialPose)
 
-               )
-       );
+                       .lineToY(35)
+                       .strafeTo(new Vector2d(-35.5, 35))
+                   //    .lineToY(-10)
+                       /*
+               .setTangent(3 * Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-12, 35, Math.PI / 2), 3 * Math.PI / 2) //1st chamb
+               .waitSeconds(0.5)
+               .splineToSplineHeading(new Pose2d(-35.5, 36, 3 * Math.PI / 2), 3 * Math.PI / 2)
+               .splineToSplineHeading(new Pose2d(-36, 8, 3 * Math.PI / 2), 3 * Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-46, 11, 3 * Math.PI / 2), Math.PI / 2)
+               .lineToY(50)
+               .setTangent(3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-46, 11), 3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-54, 16), Math.PI / 2)
+               .lineToY(50)
+               .setTangent(3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-54, 11), 3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-60, 16), Math.PI / 2)
+               .lineToY(40)
+               .splineToSplineHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2) //clip pickup
+               .waitSeconds(0.5)
+               .setTangent(3 * Math.PI / 2)
+               .splineToSplineHeading(new Pose2d(-8, 35, Math.PI / 2), 3 * Math.PI / 2) //2nd chamber
+               .waitSeconds(0.5)
+               .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.5)
+               .splineToLinearHeading(new Pose2d(-4, 35, Math.PI / 2), 3 * Math.PI / 2) //3rd chamber
+               .waitSeconds(0.5)
+               .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.5)
+               .splineToLinearHeading(new Pose2d(0, 35, Math.PI / 2), 3 * Math.PI / 2) //4th chamber
+               */
+                       .build());
 
 
-        while (!isStopRequested() && !opModeIsActive()) {
-
-        }
 
    }
 

@@ -82,7 +82,7 @@ public final class MecanumDrive {
 
         // path controller gains
         public double axialGain = 6.0;
-        public double lateralGain = 0.0;
+        public double lateralGain = 6.0;
         public double headingGain = 4.0; // shared with turn
 
         public double axialVelGain = 0.0;
@@ -249,7 +249,7 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         //Pose2d initialPose = new Pose2d(0, 0, 0); // 초기 위치 및 방향 설정
-        Pose2d initialPose = new Pose2d(0, 0, 0); // 로봇 초기 위치 (X, Y, Heading)
+        Pose2d initialPose = new Pose2d(-20, 61, Math.PI / 2); // 로봇 초기 위치 (X, Y, Heading)
         localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, initialPose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
