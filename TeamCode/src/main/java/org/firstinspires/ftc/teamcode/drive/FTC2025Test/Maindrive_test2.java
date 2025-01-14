@@ -155,7 +155,7 @@ public class Maindrive_test2 extends LinearOpMode {
 
         double H_angle_Ready = 0.3;
         double H_angle_pickup = 0.17;
-        double H_angle_trans = 0.7;
+        double H_angle_trans = 0.68;
 
         double H_wristL_target = 0;
         double H_wristR_target = 0;
@@ -188,6 +188,8 @@ public class Maindrive_test2 extends LinearOpMode {
                 H_grip.setPosition(H_Grip_CLOSE);
 
                 V_wristL.setPosition(V_wrist_trans);
+
+                H_length.setPosition(H_length_IN);
 
                 angle_control(H_angle_trans);
                 wrist_control(H_wristL_POS180, H_wristR_POS180);
@@ -286,6 +288,10 @@ public class Maindrive_test2 extends LinearOpMode {
 
             if (rising_edge(currentGamepad1.dpad_down, previousGamepad1.dpad_down)) {
                 H_length.setPosition(H_length_IN);
+                angle_control(H_angle_trans);
+                wrist_control(H_wristL_POS180-0.02, H_wristR_POS180+0.02);
+                V_wristL.setPosition(V_wrist_trans);
+                V_grip.setPosition(V_Grip_OPEN);
             }
 
             if (rising_edge(currentGamepad1.b, previousGamepad1.b)) {
@@ -371,6 +377,8 @@ public class Maindrive_test2 extends LinearOpMode {
                 arm_target = clip_pick;
                 V_wristL.setPosition(V_wrist_clip_pickup);
             }
+
+
 
 
 

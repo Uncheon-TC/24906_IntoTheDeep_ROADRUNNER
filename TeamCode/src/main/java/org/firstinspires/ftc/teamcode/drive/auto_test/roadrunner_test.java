@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.drive.auto_test;
+package org.firstinspires.ftc.teamcode.drive.auto_test;
 
 import androidx.annotation.NonNull;
 
@@ -8,6 +8,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
 // Non-RR imports
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,6 +18,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 @Autonomous(name = "AUTOTEST", group = "Autonomous")
@@ -34,6 +39,58 @@ public class roadrunner_test extends LinearOpMode{
 
         private Servo V_wristL;
 
+        //setting default var
+        int arm_target = 0;
+
+        boolean first_count = false;
+
+        double V_Grip_OPEN = 0.35;
+        double V_Grip_CLOSE = 0.63;
+
+        double H_Grip_OPEN = 0.55;
+        double H_Grip_CLOSE = 0.85;
+
+        boolean HG_OPEN = true;
+        boolean VG_OPEN = true;
+
+        //TODO: find Horizon Griper value
+
+        int Low_basket = 2400;
+        int High_basket = 4200;
+        int clip_pick = 0;
+
+        int High_chamber = 1800;
+        int High_chamber_hang = 1350;
+
+        //TODO: make rigging mechanism and find tick
+        int Low_rigging = 0;
+
+        double V_wrist_outside_90degree = 0.83;
+        double V_wrist_clip_pickup = 0.86;
+        double V_wrist_trans = 0.07;
+        double V_wrist_trans_temp = 0.2;
+        double V_wrist_basket = 0.76;
+
+
+        int trans_status = 0;
+
+        int chamber_status = 0;
+
+        int pick_status = 0;
+
+        double H_wristL_POS90 = 0.5;
+        double H_wristR_POS90 = 0.5;
+
+        double H_wristL_POS180 = 0.95;
+        double H_wristR_POS180 = 0.95;
+
+        double H_length_IN = 0.85;
+        double H_length_OUT = 0.5;
+
+        double H_angle_Ready = 0.3;
+        double H_angle_pickup = 0.17;
+        double H_angle_trans = 0.7;
+
         public H_factor(HardwareMap hardwareMap) {
             H_wristL = hardwareMap.servo.get("H_wristL");
             H_wristR = hardwareMap.servo.get("H_wristR");
@@ -49,73 +106,69 @@ public class roadrunner_test extends LinearOpMode{
             H_angleL.setDirection(Servo.Direction.REVERSE);
         }
 
-        public class H_pick_forward implements Action {
-            private boolean init = false;
+        public class H_out implements Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                if (!init) {
-                    H_length.setPosition(0.85); //in
-
-                    H_wristL.setPosition(0.5);  //trans
-                    H_wristR.setPosition(0.5);  //trans
-
-                    H_angleL.setPosition(0.7);  //ready
-                    H_angleR.setPosition(0.7);  //ready
-
-                    V_wristL.setPosition(0.2);  //
-
-
-
-                    init = true;
-                }
-
-                H_length.setPosition(0.5);      //out
-
-                H_wristL.setPosition();         //find
-                H_wristR.setPosition();         //find
-
-                H_angleL.setPosition(0.2);      //pickup
-                H_angleR.setPosition(0.2);      //pickup
-
-
+                H_length.setPosition(H_length_OUT);
+                return false;
             }
         }
-
-        public Action H_pick_forward() {
-            return new H_pick_forward();
+        public Action H_OUT() {
+            return new H_out();
         }
 
-        public class H_eat_backward implements Action {
-            private boolean init = false;
+        public class H_in implements Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                if (!init) {
-                    H_length.setPosition(0.5);  //out
-
-                    H_angleL.setPosition(0.2);  //pickup
-                    H_angleR.setPosition(0.2);  //pickup
-
-                    H_wristL.setPosition();     //find
-                    H_wristR.setPosition();     //find
-
-                    V_wristL.setPosition(0.2);  //trans_temp
-
-                }
-
-
-                H_length.setPosition(0.85);     //in
-
-                H_angleL.setPosition(0.7);      //trans
-                H_angleR.setPosition(0.7);      //trans
-
-                H_wristL.setPosition(0.5);      //trans
-                H_wristR.setPosition(0.5);      //trans
+                H_length.setPosition(H_length_IN);
+                return false;
             }
         }
-        public Action H_eat_backward() {
-            return new H_pick_forward();
+        public Action H_IN() {
+            return new H_in();
+        }
+
+        public class H_pick implements Action {
+
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                    H_wristL.setPosition(H_wristL_POS90);  //trans
+                    H_wristR.setPosition(H_wristR_POS90);  //trans
+
+                    H_angleL.setPosition(H_angle_pickup);  //ready
+                    H_angleR.setPosition(H_angle_pickup);  //ready
+
+                    V_wristL.setPosition(V_wrist_trans);  //
+
+                return false;
+            }
+        }
+
+        public Action H_Pick() {
+            return new H_pick();
+        }
+
+        public class H_up implements Action {
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+
+                H_angleL.setPosition(H_angle_trans);      //trans
+                H_angleR.setPosition(H_angle_trans);      //trans
+
+                H_wristL.setPosition(H_wristL_POS180);      //trans
+                H_wristR.setPosition(H_wristR_POS180);      //trans
+
+                return false;
+            }
+        }
+        public Action H_UP() {
+            return new H_up();
         }
     }
 
@@ -123,6 +176,50 @@ public class roadrunner_test extends LinearOpMode{
         private DcMotorEx AL;
         private DcMotorEx AR;
         private Servo V_wristL;
+
+        //setting default var
+
+        int arm_target = 0;
+
+
+
+        //TODO: find Horizon Griper value
+
+        int Low_basket = 2400;
+        int High_basket = 4200;
+        int clip_pick = 0;
+
+        int High_chamber = 1800;
+        int High_chamber_hang = 1350;
+
+        //TODO: make rigging mechanism and find tick
+        int Low_rigging = 0;
+
+        double V_wrist_outside_90degree = 0.83;
+        double V_wrist_clip_pickup = 0.86;
+        double V_wrist_trans = 0.07;
+        double V_wrist_trans_temp = 0.2;
+        double V_wrist_basket = 0.76;
+
+
+        int trans_status = 0;
+
+        int chamber_status = 0;
+
+        int pick_status = 0;
+
+        double H_wristL_POS90 = 0.5;
+        double H_wristR_POS90 = 0.5;
+
+        double H_wristL_POS180 = 0.95;
+        double H_wristR_POS180 = 0.95;
+
+        double H_length_IN = 0.85;
+        double H_length_OUT = 0.5;
+
+        double H_angle_Ready = 0.3;
+        double H_angle_pickup = 0.17;
+        double H_angle_trans = 0.7;
 
 
         public V_factor(HardwareMap hardwareMap) {
@@ -133,12 +230,9 @@ public class roadrunner_test extends LinearOpMode{
             AR.setDirection(DcMotorSimple.Direction.REVERSE);
 
             V_wristL = hardwareMap.servo.get("V_wristL");
-
-
-
         }
 
-        public class pick_lift_UP implements Action {
+        public class V_basket implements Action {
             private boolean init = false;
 
             @Override
@@ -147,18 +241,8 @@ public class roadrunner_test extends LinearOpMode{
                     AL.setPower(0.5);
                     AR.setPower(0.5);
 
-
-                    V_wristL.setPosition(0.07);
-
                     init = true;
                 }
-
-
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }                                       //wait
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
@@ -172,68 +256,205 @@ public class roadrunner_test extends LinearOpMode{
 
             }
         }
+
+        public Action V_Basket() {
+            return new V_basket();
+        }
+
+        public class V_ground implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    AL.setPower(0.5);
+                    AR.setPower(0.5);
+
+                    init = true;
+                }
+
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+                if (pos >= 0) {
+                    return true;
+                } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
+                    return false;
+                }
+
+            }
+        }
+
+        public Action V_Ground() {
+            return new V_ground();
+        }
+
+        public class V_chamber_high implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    AL.setPower(0.5);
+                    AR.setPower(0.5);
+
+                    init = true;
+                }
+
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+                if (pos >= High_chamber) {
+                    return true;
+                } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
+                    return false;
+                }
+
+            }
+        }
+
+        public Action V_Chamber_High() {
+            return new V_chamber_high();
+        }
+
+        public class V_chamber_hang implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    AL.setPower(0.5);
+                    AR.setPower(0.5);
+
+                    init = true;
+                }
+
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+                if (pos >= High_chamber_hang) {
+                    return true;
+                } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
+                    return false;
+                }
+
+            }
+        }
+
+        public Action V_Chamber_Hang() {
+            return new V_chamber_hang();
+        }
+
+        public class clip_pick implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                V_wristL.setPosition(V_wrist_clip_pickup);
+                return false;
+
+            }
+        }
+
+        public Action chamber_grip() {
+            return new clip_pick();
+        }
+
     }
 
-    public class grip_factor {
+    public class Grip_factor {
         private Servo H_grip;
         private Servo V_grip;
 
-        public grip_factor(HardwareMap hardwareMap) {
+
+        double V_Grip_OPEN = 0.35;
+        double V_Grip_CLOSE = 0.63;
+
+        double H_Grip_OPEN = 0.55;
+        double H_Grip_CLOSE = 0.85;
+
+        public Grip_factor(HardwareMap hardwareMap) {
             H_grip = hardwareMap.servo.get("H_grip");
             V_grip = hardwareMap.servo.get("V_grip");
         }
 
-        public class V_grip_CLOSE implements Action {
+        public class V_grip_close implements Action {
             private boolean init = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                V_grip.setPosition(0.63);
+                V_grip.setPosition(V_Grip_CLOSE);
+                return false;
             }
         }
         public Action V_grip_CLOSE() {
-            return new V_grip_CLOSE();
+            return new V_grip_close();
         }
 
-        public class V_grip_OPEN implements  Action {
+        public class V_grip_open implements  Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                V_grip.setPosition(0.35);
+                V_grip.setPosition(V_Grip_OPEN);
+                return false;
             }
         }
         public Action V_grip_OPEN() {
-            return new V_grip_OPEN();
+            return new V_grip_open();
         }
 
-        public class H_grip_CLOSE implements  Action {
+        public class H_grip_close implements  Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                H_grip.setPosition(0.8);
+                H_grip.setPosition(H_Grip_CLOSE);
+                return false;
             }
         }
         public Action H_grip_CLOSE() {
-            return new H_grip_CLOSE();
+            return new H_grip_close();
         }
 
-        public class H_grip_OPEN implements  Action {
+        public class H_grip_open implements  Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                H_grip.setPosition(0.55);
+                H_grip.setPosition(H_Grip_OPEN);
+                return false;
             }
         }
         public Action H_grip_OPEN() {
-            return new H_grip_OPEN();
+            return new H_grip_open();
         }
 
     }
 
    @Override
-    public void runO0Mode() {
+    public void runOpMode() {
+
+       Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(0));
+       MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+       H_factor h_factor = new H_factor(hardwareMap);
+       V_factor v_factor = new V_factor(hardwareMap);
+       Grip_factor grip_factor = new Grip_factor(hardwareMap);
+
+        if (isStopRequested()) return;
+
+       Actions.runBlocking(
+               new SequentialAction(
+
+               )
+       );
+
+
+        while (!isStopRequested() && !opModeIsActive()) {
+
+        }
 
    }
 
 
-} */
+}
