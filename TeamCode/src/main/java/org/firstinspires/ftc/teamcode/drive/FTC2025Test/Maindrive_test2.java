@@ -125,17 +125,17 @@ public class Maindrive_test2 extends LinearOpMode {
         int High_basket = 4200;
         int clip_pick = 0;
 
-        int High_chamber = 1800;
-        int High_chamber_hang = 1350;
+        int High_chamber = 2250;
+        int High_chamber_hang = 1500;
 
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
 
         double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.81;
+        double V_wrist_clip_pickup = 0.78;
         double V_wrist_trans = 0.02;
         double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.71;
+        double V_wrist_basket = 0.65;
 
 
         int trans_status = 0;
