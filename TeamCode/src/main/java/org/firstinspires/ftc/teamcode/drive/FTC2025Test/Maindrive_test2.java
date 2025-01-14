@@ -108,7 +108,7 @@ public class Maindrive_test2 extends LinearOpMode {
         //setting default var
         int arm_target = 0;
 
-        boolean first_count = false;
+        boolean first_count = true;
 
         double V_Grip_OPEN = 0.35;
         double V_Grip_CLOSE = 0.63;
@@ -131,11 +131,11 @@ public class Maindrive_test2 extends LinearOpMode {
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
 
-        double V_wrist_outside_90degree = 0.83;
-        double V_wrist_clip_pickup = 0.86;
-        double V_wrist_trans = 0.07;
+        double V_wrist_outside_90degree = 0.78;
+        double V_wrist_clip_pickup = 0.81;
+        double V_wrist_trans = 0.02;
         double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.76;
+        double V_wrist_basket = 0.71;
 
 
         int trans_status = 0;
@@ -147,8 +147,8 @@ public class Maindrive_test2 extends LinearOpMode {
         double H_wristL_POS90 = 0.5;
         double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.95;
-        double H_wristR_POS180 = 0.95;
+        double H_wristL_POS180 = 0.93;
+        double H_wristR_POS180 = 0.97;
 
         double H_length_IN = 0.85;
         double H_length_OUT = 0.5;
@@ -254,7 +254,7 @@ public class Maindrive_test2 extends LinearOpMode {
             if (rising_edge(currentGamepad1.dpad_up, previousGamepad1.dpad_up)) {
                 H_length.setPosition(H_length_OUT);
                 angle_control(H_angle_Ready);
-                H_grip.setPosition(H_Grip_OPEN);
+                H_grip.setPosition(H_Grip_CLOSE);
                 wrist_control(H_wristL_POS90, H_wristR_POS90);
 
                 V_wristL.setPosition(V_wrist_trans);
@@ -289,7 +289,7 @@ public class Maindrive_test2 extends LinearOpMode {
             if (rising_edge(currentGamepad1.dpad_down, previousGamepad1.dpad_down)) {
                 H_length.setPosition(H_length_IN);
                 angle_control(H_angle_trans);
-                wrist_control(H_wristL_POS180-0.02, H_wristR_POS180+0.02);
+                wrist_control(H_wristL_POS180, H_wristR_POS180);
                 V_wristL.setPosition(V_wrist_trans);
                 V_grip.setPosition(V_Grip_OPEN);
             }
@@ -302,7 +302,7 @@ public class Maindrive_test2 extends LinearOpMode {
                 //VG_OPEN = false;
             }
 
-            if (rising_edge(currentGamepad1.dpad_left, previousGamepad1.dpad_left)) {
+            if (rising_edge(currentGamepad1.dpad_right, previousGamepad1.dpad_right)) {
                 H_wristL_target = H_wristL.getPosition() + interval;
                 H_wristR_target = H_wristR.getPosition() - interval;
 
@@ -317,7 +317,7 @@ public class Maindrive_test2 extends LinearOpMode {
                 wrist_control(H_wristL_target, H_wristR_target);
             }
 
-            if (rising_edge(currentGamepad1.dpad_right, previousGamepad1.dpad_right)) {
+            if (rising_edge(currentGamepad1.dpad_left, previousGamepad1.dpad_left)) {
                 H_wristL_target = H_wristL.getPosition() - interval;
                 H_wristR_target = H_wristR.getPosition() + interval;
 
