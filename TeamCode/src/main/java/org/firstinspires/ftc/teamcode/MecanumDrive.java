@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.drive.auto_test.roadrunner_test;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
@@ -249,7 +250,7 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         //Pose2d initialPose = new Pose2d(0, 0, 0); // 초기 위치 및 방향 설정
-        Pose2d initialPose = new Pose2d(-20, 61, Math.PI / 2); // 로봇 초기 위치 (X, Y, Heading)
+        Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI / 2); // 로봇 초기 위치 (X, Y, Heading)
         localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, initialPose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);

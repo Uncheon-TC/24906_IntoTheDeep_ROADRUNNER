@@ -114,7 +114,7 @@ public class Maindrive_test2 extends LinearOpMode {
         double V_Grip_CLOSE = 0.63;
 
         double H_Grip_OPEN = 0.55;
-        double H_Grip_CLOSE = 0.85;
+        double H_Grip_CLOSE = 0.79;
 
         boolean HG_OPEN = true;
         boolean VG_OPEN = true;
@@ -125,15 +125,15 @@ public class Maindrive_test2 extends LinearOpMode {
         int High_basket = 4200;
         int clip_pick = 0;
 
-        int High_chamber = 2250;
-        int High_chamber_hang = 1500;
+        int High_chamber = 2200;
+        int High_chamber_hang = 1300;
 
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
 
         double V_wrist_outside_90degree = 0.78;
         double V_wrist_clip_pickup = 0.78;
-        double V_wrist_trans = 0.02;
+        double V_wrist_trans = 0.03;
         double V_wrist_trans_temp = 0.2;
         double V_wrist_basket = 0.65;
 
@@ -147,10 +147,10 @@ public class Maindrive_test2 extends LinearOpMode {
         double H_wristL_POS90 = 0.5;
         double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.93;
-        double H_wristR_POS180 = 0.97;
+        double H_wristL_POS180 = 0.89;
+        double H_wristR_POS180 = 0.89;
 
-        double H_length_IN = 0.85;
+        double H_length_IN = 0.88;
         double H_length_OUT = 0.5;
 
         double H_angle_Ready = 0.3;
@@ -354,6 +354,7 @@ public class Maindrive_test2 extends LinearOpMode {
             if (rising_edge(currentGamepad2.b, previousGamepad2.b)) {
                 arm_target = High_basket;
                 V_wristL.setPosition(V_wrist_basket);
+                H_grip.setPosition(H_Grip_OPEN);
             }
 
             if (rising_edge(currentGamepad2.x, previousGamepad2.x)) {
@@ -362,6 +363,7 @@ public class Maindrive_test2 extends LinearOpMode {
 
                     arm_target = High_chamber;
                     V_wristL.setPosition(V_wrist_outside_90degree);
+                    H_grip.setPosition(H_Grip_OPEN);
                     chamber_status = 1;
 
                 } else if (chamber_status == 1) {

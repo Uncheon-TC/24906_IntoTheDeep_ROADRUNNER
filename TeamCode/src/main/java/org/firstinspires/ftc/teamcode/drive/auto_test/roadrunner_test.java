@@ -436,7 +436,7 @@ public class roadrunner_test extends LinearOpMode{
    @Override
     public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(-20, 61, Math.PI / 2);
+       Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI / 2);
        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
        H_factor h_factor = new H_factor(hardwareMap);
        V_factor v_factor = new V_factor(hardwareMap);
@@ -449,8 +449,17 @@ public class roadrunner_test extends LinearOpMode{
        Actions.runBlocking(
                drive.actionBuilder(initialPose)
 
-                       .lineToY(35)
-                       .strafeTo(new Vector2d(-35.5, 35))
+                       .lineToY(36)
+                       .strafeTo(new Vector2d(-28, 35))
+                       .splineToConstantHeading(new Vector2d(-45,10),Math.PI/2)
+                       .waitSeconds(0.1)
+                       .lineToY(55)
+                       .lineToY(17)
+                       .splineToConstantHeading(new Vector2d(-55,10),Math.PI/2)
+                       .lineToY(55)
+                       .lineToY(17)
+                       .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
+                       .lineToY(55)
                    //    .lineToY(-10)
                        /*
                .setTangent(3 * Math.PI / 2)
