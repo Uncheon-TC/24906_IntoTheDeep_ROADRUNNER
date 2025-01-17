@@ -92,10 +92,10 @@ public class MAX_EXTENTION_CHECK extends LinearOpMode {
             if (isStopRequested()) return;
 
             H_length.setPosition(H_length_OUT);
-            angle_control(H_angle_trans);
+            angle_control(H_angle_Ready);
             wrist_control(H_wristL_POS180, H_wristR_POS180);
 
-            V_wristL.setPosition(V_wrist_outside_90degree);
+            V_wristL.setPosition(0.74);
 
             V_grip.setPosition(V_Grip_CLOSE);
             H_grip.setPosition(H_Grip_CLOSE);

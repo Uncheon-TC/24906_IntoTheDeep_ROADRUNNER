@@ -516,7 +516,7 @@ public class roadrunner_test extends LinearOpMode{
                .splineToConstantHeading(new Vector2d(-45, 12),  Math.PI / 2)
                //.waitSeconds(0.1)
                .lineToY(53)
-               //.setTangent(3 * Math.PI / 2)
+               .setTangent(3 * Math.PI / 2)
                .splineToConstantHeading(new Vector2d(-46,17),3 * Math.PI/2)
               // .lineToY(17)
                .splineToConstantHeading(new Vector2d(-58,12),Math.PI/2)
