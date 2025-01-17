@@ -182,6 +182,7 @@ public class wyhgsert extends LinearOpMode {
                         lift.liftUp(),
                         claw.openClaw(),
                         lift.liftDown(),
+
                         trajectoryActionCloseOut
                 )
         );

@@ -10,8 +10,11 @@ import com.acmerobotics.roadrunner.Action;
 // Non-RR imports
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -26,6 +29,17 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name = "AUTOTEST", group = "Autonomous")
 
 public class roadrunner_test extends LinearOpMode{
+
+    private PIDController controller;
+
+    public static double p = 0.02, i = 0, d = 0.0005;
+
+    public static double f = 0.001;
+    public static int target = 0;
+
+    private DcMotorEx AL;
+    private DcMotorEx AR;
+    private final double ticks_in_degree = 700 / 180.0;
 
     public class H_factor {
         private Servo H_wristL;
@@ -227,7 +241,6 @@ public class roadrunner_test extends LinearOpMode{
             AL = hardwareMap.get(DcMotorEx.class, "AL");
             AR = hardwareMap.get(DcMotorEx.class, "AR");
 
-            AR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             AR.setDirection(DcMotorSimple.Direction.REVERSE);
 
             V_wristL = hardwareMap.servo.get("V_wristL");
@@ -239,19 +252,17 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(0.5);
-                    AR.setPower(0.5);
 
                     init = true;
                 }
 
+                arm_target = High_basket;
+
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos < 4200) {
+                if (pos < 4100) {
                     return true;
                 } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
                     return false;
                 }
 
@@ -268,19 +279,16 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(0.5);
-                    AR.setPower(0.5);
-
                     init = true;
                 }
 
+                arm_target = 0;
+
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos >= 0) {
+                if (pos >= 30) {
                     return true;
                 } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
                     return false;
                 }
 
@@ -297,19 +305,16 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(0.5);
-                    AR.setPower(0.5);
-
                     init = true;
                 }
+
+                arm_target = High_chamber;
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
                 if (pos >= High_chamber) {
                     return true;
                 } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
                     return false;
                 }
 
@@ -326,19 +331,16 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(0.5);
-                    AR.setPower(0.5);
-
                     init = true;
                 }
+
+                arm_target = High_chamber_hang;
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
                 if (pos >= High_chamber_hang) {
                     return true;
                 } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
                     return false;
                 }
 
@@ -433,6 +435,8 @@ public class roadrunner_test extends LinearOpMode{
 
     }
 
+
+
    @Override
     public void runOpMode() throws InterruptedException {
 
@@ -442,56 +446,94 @@ public class roadrunner_test extends LinearOpMode{
        V_factor v_factor = new V_factor(hardwareMap);
        Grip_factor grip_factor = new Grip_factor(hardwareMap);
 
+       controller = new PIDController(p, i, d);
+
+       AL = hardwareMap.get(DcMotorEx.class, "AL");
+       AR = hardwareMap.get(DcMotorEx.class, "AR");
+       AR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+       TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
+
+               .lineToY(36)
+
+               // .strafeTo(new Vector2d(-28, 35))
+
+               .splineToConstantHeading(new Vector2d(-28,35),Math.PI/2)
+               .splineToConstantHeading(new Vector2d(-45, 10),  Math.PI / 2)
+               //.waitSeconds(0.1)
+               .lineToY(55)
+               .lineToY(17)
+               .splineToConstantHeading(new Vector2d(-55,10),Math.PI/2)
+               .lineToY(55);
+               // .lineToY(17)
+               //  .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
+               // .lineToY(55)
+               //    .lineToY(-10)
+               /*
+       .setTangent(3 * Math.PI / 2)
+       .splineToLinearHeading(new Pose2d(-12, 35, Math.PI / 2), 3 * Math.PI / 2) //1st chamb
+       .waitSeconds(0.5)
+       .splineToSplineHeading(new Pose2d(-45, 10,  Math.PI / 2),  Math.PI / 2)
+       .splineToSplineHeading(new Pose2d(-36, 8, 3 * Math.PI / 2), 3 * Math.PI / 2)
+       .splineToLinearHeading(new Pose2d(-46, 11, 3 * Math.PI / 2), Math.PI / 2)
+       .lineToY(50)
+       .setTangent(3 * Math.PI / 2)
+       .splineToConstantHeading(new Vector2d(-46, 11), 3 * Math.PI / 2)
+       .splineToConstantHeading(new Vector2d(-54, 16), Math.PI / 2)
+       .lineToY(50)
+       .setTangent(3 * Math.PI / 2)
+       .splineToConstantHeading(new Vector2d(-54, 11), 3 * Math.PI / 2)
+       .splineToConstantHeading(new Vector2d(-60, 16), Math.PI / 2)
+       .lineToY(40)
+       .splineToSplineHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2) //clip pickup
+       .waitSeconds(0.5)
+       .setTangent(3 * Math.PI / 2)
+       .splineToSplineHeading(new Pose2d(-8, 35, Math.PI / 2), 3 * Math.PI / 2) //2nd chamber
+       .waitSeconds(0.5)
+       .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
+       .waitSeconds(0.5)
+       .splineToLinearHeading(new Pose2d(-4, 35, Math.PI / 2), 3 * Math.PI / 2) //3rd chamber
+       .waitSeconds(0.5)
+       .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
+       .waitSeconds(0.5)
+       .splineToLinearHeading(new Pose2d(0, 35, Math.PI / 2), 3 * Math.PI / 2) //4th chamber
+       */
+       Action traj_END = traj.endTrajectory().fresh()
+                       .build();
+
+
+               Actions.runBlocking(grip_factor.H_grip_CLOSE());
+               Actions.runBlocking(grip_factor.V_grip_CLOSE());
+
+
        waitForStart();
 
-        if (isStopRequested()) return;
-
        Actions.runBlocking(
-               drive.actionBuilder(initialPose)
+               new SequentialAction(
+                       traj.build(),
 
-                       .lineToY(36)
-                       .strafeTo(new Vector2d(-28, 35))
-                       .splineToConstantHeading(new Vector2d(-45,10),Math.PI/2)
-                       .waitSeconds(0.1)
-                       .lineToY(55)
-                       .lineToY(17)
-                       .splineToConstantHeading(new Vector2d(-55,10),Math.PI/2)
-                       .lineToY(55)
-                       .lineToY(17)
-                       .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
-                       .lineToY(55)
-                   //    .lineToY(-10)
-                       /*
-               .setTangent(3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-12, 35, Math.PI / 2), 3 * Math.PI / 2) //1st chamb
-               .waitSeconds(0.5)
-               .splineToSplineHeading(new Pose2d(-35.5, 36, 3 * Math.PI / 2), 3 * Math.PI / 2)
-               .splineToSplineHeading(new Pose2d(-36, 8, 3 * Math.PI / 2), 3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-46, 11, 3 * Math.PI / 2), Math.PI / 2)
-               .lineToY(50)
-               .setTangent(3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-46, 11), 3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-54, 16), Math.PI / 2)
-               .lineToY(50)
-               .setTangent(3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-54, 11), 3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-60, 16), Math.PI / 2)
-               .lineToY(40)
-               .splineToSplineHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2) //clip pickup
-               .waitSeconds(0.5)
-               .setTangent(3 * Math.PI / 2)
-               .splineToSplineHeading(new Pose2d(-8, 35, Math.PI / 2), 3 * Math.PI / 2) //2nd chamber
-               .waitSeconds(0.5)
-               .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
-               .waitSeconds(0.5)
-               .splineToLinearHeading(new Pose2d(-4, 35, Math.PI / 2), 3 * Math.PI / 2) //3rd chamber
-               .waitSeconds(0.5)
-               .splineToLinearHeading(new Pose2d(-47, 60, 3 * Math.PI / 2), Math.PI / 2)
-               .waitSeconds(0.5)
-               .splineToLinearHeading(new Pose2d(0, 35, Math.PI / 2), 3 * Math.PI / 2) //4th chamber
-               */
-                       .build());
+                       v_factor.V_Chamber_High(),
 
+
+
+
+                       traj_END
+               )
+       );
+
+       while (opModeIsActive()) {
+           controller.setPID(p, i, d);
+           int armPos = AL.getCurrentPosition();
+           double pid = controller.calculate(armPos, target);
+           double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+
+           double power = pid + ff;
+
+           AL.setPower(power);
+           AR.setPower(power);
+
+           if (isStopRequested()) return;
+       }
 
 
    }

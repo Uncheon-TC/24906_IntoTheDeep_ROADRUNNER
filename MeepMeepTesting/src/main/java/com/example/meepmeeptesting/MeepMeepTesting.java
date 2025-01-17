@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-20, 61, Math.PI / 2))
-                        //.setTangent(3 * Math.PI / 2)
+                        .setTangent(3 * Math.PI / 2)
 
 
                         .splineToLinearHeading(new Pose2d(-12, 35, Math.PI / 2), 3 * Math.PI / 2) //1st chamber
