@@ -55,7 +55,7 @@ public class roadrunner_test extends LinearOpMode{
         private Servo V_wristL;
 
         //setting default var
-        int arm_target = 0;
+        int target = 0;
 
         boolean first_count = false;
 
@@ -194,7 +194,7 @@ public class roadrunner_test extends LinearOpMode{
 
         //setting default var
 
-        int arm_target = 0;
+        int target = 0;
 
 
 
@@ -204,8 +204,8 @@ public class roadrunner_test extends LinearOpMode{
         int High_basket = 4200;
         int clip_pick = 0;
 
-        int High_chamber = 1800;
-        int High_chamber_hang = 1350;
+        int High_chamber = 2200;
+        int High_chamber_hang = 1100;
 
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
@@ -226,15 +226,15 @@ public class roadrunner_test extends LinearOpMode{
         double H_wristL_POS90 = 0.5;
         double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.95;
-        double H_wristR_POS180 = 0.95;
+        double H_wristL_POS180 = 0.85;
+        double H_wristR_POS180 = 0.85;
 
-        double H_length_IN = 0.85;
+        double H_length_IN = 0.88;
         double H_length_OUT = 0.5;
 
         double H_angle_Ready = 0.3;
-        double H_angle_pickup = 0.17;
-        double H_angle_trans = 0.7;
+        double H_angle_pickup = 0.16;
+        double H_angle_trans = 0.68;
 
 
         public V_factor(HardwareMap hardwareMap) {
@@ -242,6 +242,9 @@ public class roadrunner_test extends LinearOpMode{
             AR = hardwareMap.get(DcMotorEx.class, "AR");
 
             AR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+            AL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            AR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             V_wristL = hardwareMap.servo.get("V_wristL");
         }
@@ -252,17 +255,21 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
+                    AL.setPower(1);
+                    AR.setPower(1);
 
                     init = true;
                 }
 
-                arm_target = High_basket;
+                target = High_basket;
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
                 if (pos < 4100) {
                     return true;
                 } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
                     return false;
                 }
 
@@ -279,16 +286,22 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
+                    AL.setPower(-1);
+                    AR.setPower(-1);
+
                     init = true;
                 }
 
-                arm_target = 0;
+                target = 0;
+
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
                 if (pos >= 30) {
                     return true;
                 } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
                     return false;
                 }
 
@@ -305,16 +318,24 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
+
+                    AL.setPower(1);
+                    AR.setPower(1);
+
                     init = true;
                 }
 
-                arm_target = High_chamber;
+                target = High_chamber;
+
+
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos >= High_chamber) {
+                if (pos <= High_chamber) {
                     return true;
                 } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
                     return false;
                 }
 
@@ -331,16 +352,20 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
+                    AL.setPower(-1);
+                    AR.setPower(-1);
                     init = true;
                 }
 
-                arm_target = High_chamber_hang;
+                target = High_chamber_hang;
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
                 if (pos >= High_chamber_hang) {
                     return true;
                 } else {
+                    AL.setPower(0);
+                    AR.setPower(0);
                     return false;
                 }
 
@@ -362,9 +387,30 @@ public class roadrunner_test extends LinearOpMode{
             }
         }
 
-        public Action chamber_grip() {
+        public Action Clip_PICK() {
             return new clip_pick();
         }
+
+
+
+
+
+        public class chamber_hang implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                V_wristL.setPosition(V_wrist_outside_90degree);
+                return false;
+
+            }
+        }
+
+        public Action V_wrist_Chamber_Hang() {
+            return new chamber_hang();
+        }
+
+
 
     }
 
@@ -454,17 +500,27 @@ public class roadrunner_test extends LinearOpMode{
 
        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
 
-               .lineToY(36)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_wrist_Chamber_Hang()))
+
+               .lineToY(34)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .waitSeconds(0.1)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+
 
                // .strafeTo(new Vector2d(-28, 35))
 
                .splineToConstantHeading(new Vector2d(-28,35),Math.PI/2)
-               .splineToConstantHeading(new Vector2d(-45, 10),  Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-45, 12),  Math.PI / 2)
                //.waitSeconds(0.1)
-               .lineToY(55)
-               .lineToY(17)
-               .splineToConstantHeading(new Vector2d(-55,10),Math.PI/2)
-               .lineToY(55);
+               .lineToY(53)
+               //.setTangent(3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-46,17),3 * Math.PI/2)
+              // .lineToY(17)
+               .splineToConstantHeading(new Vector2d(-58,12),Math.PI/2)
+               .lineToY(53);
                // .lineToY(17)
                //  .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
                // .lineToY(55)
@@ -504,6 +560,7 @@ public class roadrunner_test extends LinearOpMode{
 
                Actions.runBlocking(grip_factor.H_grip_CLOSE());
                Actions.runBlocking(grip_factor.V_grip_CLOSE());
+               Actions.runBlocking(h_factor.H_IN());
 
 
        waitForStart();
@@ -512,7 +569,6 @@ public class roadrunner_test extends LinearOpMode{
                new SequentialAction(
                        traj.build(),
 
-                       v_factor.V_Chamber_High(),
 
 
 
@@ -531,6 +587,12 @@ public class roadrunner_test extends LinearOpMode{
 
            AL.setPower(power);
            AR.setPower(power);
+
+
+
+           telemetry.addData("armpower ", power);
+           telemetry.addData("armtarget ", target);
+           telemetry.update();
 
            if (isStopRequested()) return;
        }

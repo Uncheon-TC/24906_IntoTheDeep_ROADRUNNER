@@ -154,7 +154,7 @@ public class Maindrive_test2 extends LinearOpMode {
         double H_length_OUT = 0.5;
 
         double H_angle_Ready = 0.3;
-        double H_angle_pickup = 0.17;
+        double H_angle_pickup = 0.16;
         double H_angle_trans = 0.68;
 
         double H_wristL_target = 0;
