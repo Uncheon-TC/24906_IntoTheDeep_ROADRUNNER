@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -74,17 +75,17 @@ public class roadrunner_test extends LinearOpMode{
         int High_basket = 4200;
         int clip_pick = 0;
 
-        int High_chamber = 1800;
-        int High_chamber_hang = 1350;
+        int High_chamber = 2200;
+        int High_chamber_hang = 1100;
 
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
 
-        double V_wrist_outside_90degree = 0.83;
-        double V_wrist_clip_pickup = 0.86;
-        double V_wrist_trans = 0.07;
+        double V_wrist_outside_90degree = 0.78;
+        double V_wrist_clip_pickup = 0.78;
+        double V_wrist_trans = 0.03;
         double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.76;
+        double V_wrist_basket = 0.65;
 
 
         int trans_status = 0;
@@ -96,15 +97,15 @@ public class roadrunner_test extends LinearOpMode{
         double H_wristL_POS90 = 0.5;
         double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.95;
-        double H_wristR_POS180 = 0.95;
+        double H_wristL_POS180 = 0.85;
+        double H_wristR_POS180 = 0.85;
 
-        double H_length_IN = 0.85;
+        double H_length_IN = 0.88;
         double H_length_OUT = 0.5;
 
         double H_angle_Ready = 0.3;
-        double H_angle_pickup = 0.17;
-        double H_angle_trans = 0.7;
+        double H_angle_pickup = 0.16;
+        double H_angle_trans = 0.68;
 
         public H_factor(HardwareMap hardwareMap) {
             H_wristL = hardwareMap.servo.get("H_wristL");
@@ -210,8 +211,8 @@ public class roadrunner_test extends LinearOpMode{
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
 
-        double V_wrist_outside_90degree = 0.83;
-        double V_wrist_clip_pickup = 0.86;
+        double V_wrist_outside_90degree = 0.78;
+        double V_wrist_clip_pickup = 0.78;
         double V_wrist_trans = 0.07;
         double V_wrist_trans_temp = 0.2;
         double V_wrist_basket = 0.76;
@@ -498,15 +499,17 @@ public class roadrunner_test extends LinearOpMode{
        AR = hardwareMap.get(DcMotorEx.class, "AR");
        AR.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+
        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
 
                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_wrist_Chamber_Hang()))
 
-               .lineToY(34)
+               .lineToY(33.5)
                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .waitSeconds(0.1)
+               .waitSeconds(0.2)
                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
 
 
@@ -519,9 +522,62 @@ public class roadrunner_test extends LinearOpMode{
                .setTangent(3 * Math.PI / 2)
                .splineToConstantHeading(new Vector2d(-46,17),3 * Math.PI/2)
               // .lineToY(17)
-               .splineToConstantHeading(new Vector2d(-58,12),Math.PI/2)
-               .lineToY(53);
-               // .lineToY(17)
+               .splineToConstantHeading(new Vector2d(-56,12),Math.PI/2)
+               .lineToY(53)
+               .setTangent(Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.2)
+               .lineToY(61)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .waitSeconds(0.2)
+               .setTangent(3 * Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(0, 48,  Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.3)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
+               .lineToY(40)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .waitSeconds(0.2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .setTangent( Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.2)
+               .lineToY(61)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .waitSeconds(0.2)
+               .setTangent(3 * Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(2, 48,  Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.3)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
+               .lineToY(40)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .waitSeconds(0.2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .setTangent( Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.2)
+               .lineToY(61)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .waitSeconds(0.2)
+               .setTangent(3 *Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(4, 48,  Math.PI / 2), Math.PI / 2)
+               .waitSeconds(0.3)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
+               .lineToY(40)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .waitSeconds(0.2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .splineToConstantHeading(new Vector2d(-41.2, 50),  Math.PI / 2);
+
+
+
+
+       // .lineToY(17)
                //  .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
                // .lineToY(55)
                //    .lineToY(-10)
