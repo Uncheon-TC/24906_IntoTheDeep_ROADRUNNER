@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AUTOTEST", group = "Autonomous")
+@Autonomous(name = "AUTOhang", group = "Autonomous")
 
 public class roadrunner_test extends LinearOpMode{
 
@@ -82,7 +82,7 @@ public class roadrunner_test extends LinearOpMode{
         int Low_rigging = 0;
 
         double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.78;
+        double V_wrist_clip_pickup = 0.77;
         double V_wrist_trans = 0.03;
         double V_wrist_trans_temp = 0.2;
         double V_wrist_basket = 0.65;
@@ -212,7 +212,7 @@ public class roadrunner_test extends LinearOpMode{
         int Low_rigging = 0;
 
         double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.78;
+        double V_wrist_clip_pickup = 0.77;
         double V_wrist_trans = 0.07;
         double V_wrist_trans_temp = 0.2;
         double V_wrist_basket = 0.76;
@@ -503,75 +503,80 @@ public class roadrunner_test extends LinearOpMode{
 
        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
 
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_wrist_Chamber_Hang()))
 
-               .lineToY(33.5)
+
+               .afterTime(0, v_factor.V_Chamber_High())
+               .afterTime(0, v_factor.V_wrist_Chamber_Hang())
+               .lineToY(36)
                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .afterTime(0.5, v_factor.V_Ground())
 
 
-               // .strafeTo(new Vector2d(-28, 35))
+
 
                .splineToConstantHeading(new Vector2d(-28,35),Math.PI/2)
                .splineToConstantHeading(new Vector2d(-45, 12),  Math.PI / 2)
                //.waitSeconds(0.1)
-               .lineToY(53)
-               .setTangent(3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-46,17),3 * Math.PI/2)
-              // .lineToY(17)
-               .splineToConstantHeading(new Vector2d(-54,12),Math.PI/2)
-               .lineToY(53)
-               .setTangent(Math.PI / 2)
+               //.lineToY(53)
+               .splineToConstantHeading(new Vector2d(-45, 46),  Math.PI / 2)
+               //.setTangent(3 * Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-46,15),3 * Math.PI/2)
+               .splineToConstantHeading(new Vector2d(-58.5,12),Math.PI/2)
+              // .lineToY(53)
+               .splineToConstantHeading(new Vector2d(-58.5, 50),  Math.PI / 2)
+               //.setTangent(Math.PI / 2)
                .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
                .waitSeconds(0.1)
-               .lineToY(61)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .afterTime(0, v_factor.Clip_PICK())
+               .lineToY(60)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
                .waitSeconds(0.2)
+               .afterTime(0.9, v_factor.V_Chamber_High())
+               .afterTime(2.5, v_factor.V_Chamber_Hang())
                .setTangent(3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-2, 48,  Math.PI / 2), Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-3.5, 41,  Math.PI / 2), 3*Math.PI /2)
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
-               .lineToY(40)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+              // .lineToY(40)
+               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .afterTime(0.1, v_factor.V_Ground())
+               .afterTime(0.1, v_factor.Clip_PICK())
                .setTangent( Math.PI / 2)
                .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
                .waitSeconds(0.1)
-               .lineToY(61)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .lineToY(60)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
                .waitSeconds(0.2)
+               .afterTime(0.9, v_factor.V_Chamber_High())
+               .afterTime(2.5, v_factor.V_Chamber_Hang())
                .setTangent(3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(0, 48,  Math.PI / 2), Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(-1, 41,  Math.PI / 2), 3*Math.PI / 2)
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
-               .lineToY(40)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               //.lineToY(40)
+               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .afterTime(1, v_factor.V_Ground())
+               .afterTime(1.3, v_factor.Clip_PICK())
                .setTangent( Math.PI / 2)
                .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
                .waitSeconds(0.1)
-               .lineToY(61)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.Clip_PICK()))
+               .lineToY(60)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
                .waitSeconds(0.2)
+               .afterTime(0.9, v_factor.V_Chamber_High())
+               .afterTime(2.5, v_factor.V_Chamber_Hang())
                .setTangent(3 *Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(2, 48,  Math.PI / 2), Math.PI / 2)
+               .splineToLinearHeading(new Pose2d(1, 41,  Math.PI / 2), 3*Math.PI / 2)
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_High()))
-               .lineToY(40)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+              // .lineToY(40)
+               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .waitSeconds(0.1)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Ground()))
+               .afterTime(0.2, v_factor.V_Ground())
                .splineToConstantHeading(new Vector2d(-41.2, 50),  Math.PI / 2);
 
 
