@@ -250,8 +250,8 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         //Pose2d initialPose = new Pose2d(0, 0, 0); // 초기 위치 및 방향 설정
-        Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI / 2); // 로봇 초기 위치 (X, Y, Heading)
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, initialPose);
+        //Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI / 2); // 로봇 초기 위치 (X, Y, Heading)
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
