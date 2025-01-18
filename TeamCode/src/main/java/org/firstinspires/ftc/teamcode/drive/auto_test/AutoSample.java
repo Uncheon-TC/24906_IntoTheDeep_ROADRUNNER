@@ -484,7 +484,7 @@ public class AutoSample extends LinearOpMode{
    @Override
     public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(-30.7, -62.4, Math.PI / 2);
+       Pose2d initialPose = new Pose2d(-30.7, -60, Math.PI / 2);
        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
        H_factor h_factor = new H_factor(hardwareMap);
        V_factor v_factor = new V_factor(hardwareMap);
@@ -503,16 +503,17 @@ public class AutoSample extends LinearOpMode{
                .afterTime(0, grip_factor.V_grip_OPEN())
                .afterTime(0, h_factor.H_OUT())
                .afterTime(0.2, grip_factor.H_grip_OPEN())
-               .splineToConstantHeading(new Vector2d(-47,-45),3*Math.PI/2)
-               .afterTime(0, h_factor.H_Pick())
-               .afterTime(2, grip_factor.H_grip_CLOSE())
+               .afterTime(1.8, h_factor.H_Pick())
+               .afterTime(2.8, grip_factor.H_grip_CLOSE())
                .afterTime(3, h_factor.H_IN())
                .afterTime(5, grip_factor.V_grip_CLOSE())
                .afterTime(5.5, grip_factor.H_grip_OPEN())
-               .splineToConstantHeading(new Vector2d(-58.8,-58.0),3*Math.PI/2)
-               .afterTime(1, v_factor.V_Basket())
-               .afterTime(3, grip_factor.V_grip_OPEN())
-               .afterTime(4, v_factor.V_Ground());
+               .splineToConstantHeading(new Vector2d(-48.1,-45),3*Math.PI/2)
+               .afterTime(3, v_factor.V_Basket())
+               .afterTime(5, grip_factor.V_grip_OPEN())
+               .afterTime(6, v_factor.V_Ground())
+               .splineToConstantHeading(new Vector2d(-58.8,-58.0),3*Math.PI/2);
+
 
 
 
