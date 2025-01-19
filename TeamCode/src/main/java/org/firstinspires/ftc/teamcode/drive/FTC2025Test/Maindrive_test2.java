@@ -114,7 +114,7 @@ public class Maindrive_test2 extends LinearOpMode {
         double V_Grip_CLOSE = 0.63;
 
         double H_Grip_OPEN = 0.55;
-        double H_Grip_CLOSE = 0.79;
+        double H_Grip_CLOSE = 0.77;
 
         boolean HG_OPEN = true;
         boolean VG_OPEN = true;
@@ -135,7 +135,7 @@ public class Maindrive_test2 extends LinearOpMode {
         double V_wrist_clip_pickup = 0.78;
         double V_wrist_trans = 0.03;
         double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.65;
+        double V_wrist_basket = 0.63;
 
 
         int trans_status = 0;

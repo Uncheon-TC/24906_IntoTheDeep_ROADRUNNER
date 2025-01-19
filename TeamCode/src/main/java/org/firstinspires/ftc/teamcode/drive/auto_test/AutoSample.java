@@ -37,6 +37,10 @@ public class AutoSample extends LinearOpMode{
     private DcMotorEx AR;
     private final double ticks_in_degree = 700 / 180.0;
 
+    private Servo H_angleL;
+
+    private Servo H_angleR;
+
     public class H_factor {
         private Servo H_wristL;
         private Servo H_wristR;
@@ -122,7 +126,10 @@ public class AutoSample extends LinearOpMode{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 H_length.setPosition(H_length_OUT);
-                H_angleL.setPosition(H_angle_Ready);
+                H_wristL.setPosition(H_wristL_POS90);
+                H_wristR.setPosition(H_wristR_POS90);
+                H_angleL.setPosition(0.3);
+                H_angleR.setPosition(0.3);
                 return false;
             }
         }
@@ -135,7 +142,11 @@ public class AutoSample extends LinearOpMode{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 H_length.setPosition(H_length_IN);
-                H_angleL.setPosition(H_angle_trans);
+                H_angleL.setPosition(0.68);
+                H_angleR.setPosition(0.68);
+                H_wristL.setPosition(H_wristL_POS180);
+                H_wristR.setPosition(H_wristR_POS180);
+
                 return false;
             }
         }
@@ -148,12 +159,12 @@ public class AutoSample extends LinearOpMode{
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-
+                    H_length.setPosition(H_length_OUT);
                     H_wristL.setPosition(H_wristL_POS90);  //trans
                     H_wristR.setPosition(H_wristR_POS90);  //trans
 
-                    H_angleL.setPosition(H_angle_pickup);  //ready
-                    H_angleR.setPosition(H_angle_pickup);  //ready
+                    H_angleL.setPosition(0.16);  //ready
+                    H_angleR.setPosition(0.16);  //ready
 
                     V_wristL.setPosition(V_wrist_trans);  //
 
@@ -255,6 +266,8 @@ public class AutoSample extends LinearOpMode{
                 if (!init) {
                     AL.setPower(1);
                     AR.setPower(1);
+                    V_wristL.setPosition(V_wrist_basket);
+
 
                     init = true;
                 }
@@ -286,6 +299,7 @@ public class AutoSample extends LinearOpMode{
                 if (!init) {
                     AL.setPower(-1);
                     AR.setPower(-1);
+                    V_wristL.setPosition(V_wrist_trans);
 
                     init = true;
                 }
@@ -484,7 +498,7 @@ public class AutoSample extends LinearOpMode{
    @Override
     public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(-30.7, -60, Math.PI / 2);
+       Pose2d initialPose = new Pose2d(-6.7, -62.4, 3*Math.PI / 2);
        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
        H_factor h_factor = new H_factor(hardwareMap);
        V_factor v_factor = new V_factor(hardwareMap);
@@ -499,21 +513,79 @@ public class AutoSample extends LinearOpMode{
 
 
        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
-
-               .afterTime(0, grip_factor.V_grip_OPEN())
-               .afterTime(0, h_factor.H_OUT())
-               .afterTime(0.2, grip_factor.H_grip_OPEN())
-               .afterTime(1.8, h_factor.H_Pick())
-               .afterTime(2.8, grip_factor.H_grip_CLOSE())
-               .afterTime(3, h_factor.H_IN())
-               .afterTime(5, grip_factor.V_grip_CLOSE())
-               .afterTime(5.5, grip_factor.H_grip_OPEN())
-               .splineToConstantHeading(new Vector2d(-48.1,-45),3*Math.PI/2)
-               .afterTime(3, v_factor.V_Basket())
-               .afterTime(5, grip_factor.V_grip_OPEN())
-               .afterTime(6, v_factor.V_Ground())
-               .splineToConstantHeading(new Vector2d(-58.8,-58.0),3*Math.PI/2);
-
+               .afterTime(0, v_factor.V_Chamber_High())
+               .afterTime(0, v_factor.V_wrist_Chamber_Hang())
+               .lineToY(-36)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .waitSeconds(0.1)
+               .afterTime(0.5, v_factor.V_Ground())
+               .afterTime(1, h_factor.H_OUT())
+               .setTangent(Math.PI/2)
+               .splineToLinearHeading(new Pose2d(-46.7, -46, Math.PI / 2), Math.PI / 2)
+               .afterTime(0, grip_factor.H_grip_OPEN())
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_Pick()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_IN()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .afterTime(0, grip_factor.H_grip_OPEN());
+               /*
+               .afterTime(0, grip_factor.H_grip_OPEN())
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .setTangent(Math.PI/4)
+               .splineToLinearHeading(new Pose2d(-56, -58.5,  Math.PI / 4), Math.PI / 4)
+              // .splineToConstantHeading(new Vector2d(-60.5,-52.0),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+               .lineToY(-60)
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(1.8, v_factor.V_Ground())
+               .afterTime(2, h_factor.H_OUT())
+               .setTangent(Math.PI/2)
+               .splineToLinearHeading(new Pose2d(-48.1, -45, Math.PI / 2), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-48.1,-45),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_Pick()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_IN()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .afterTime(1, grip_factor.H_grip_OPEN())
+               .setTangent(Math.PI/4)
+               .splineToLinearHeading(new Pose2d(-56, -58.5,  Math.PI / 4), Math.PI / 4)
+               //.splineToConstantHeading(new Vector2d(-60.5,-52.0),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0, grip_factor.H_grip_OPEN())
+               .afterTime(1.8, v_factor.V_Ground())
+               .afterTime(2, h_factor.H_OUT())
+               .setTangent(Math.PI/2)
+               .splineToLinearHeading(new Pose2d(-55.6, -45, Math.PI / 2), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-55.6,-45),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_Pick()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_IN()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .afterTime(1, grip_factor.H_grip_OPEN())
+               .setTangent(Math.PI/4)
+               .splineToLinearHeading(new Pose2d(-56, -58.5,  Math.PI / 4), Math.PI / 4)
+               //.splineToConstantHeading(new Vector2d(-60.5,-52.0),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0, grip_factor.H_grip_OPEN())
+               .afterTime(1.8, v_factor.V_Ground())
+               .afterTime(2, h_factor.H_OUT())
+               .setTangent(Math.PI/2)
+               .splineToLinearHeading(new Pose2d(-62.1, -45, Math.PI / 2), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-62.1,-45),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_Pick()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+               .stopAndAdd(() -> Actions.runBlocking(h_factor.H_IN()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .setTangent(Math.PI/4)
+               .splineToLinearHeading(new Pose2d(-56, -58.5,  Math.PI / 4), Math.PI / 4)
+               //.splineToConstantHeading(new Vector2d(-60.5,-52.0),3*Math.PI/2)
+               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(1, v_factor.V_Ground());
+*/
 
 
 
