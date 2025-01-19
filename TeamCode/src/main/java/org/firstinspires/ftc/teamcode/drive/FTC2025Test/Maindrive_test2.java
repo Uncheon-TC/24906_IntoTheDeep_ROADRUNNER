@@ -132,7 +132,7 @@ public class Maindrive_test2 extends LinearOpMode {
         int Low_rigging = 0;
 
         double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.77;
+        double V_wrist_clip_pickup = 0.78;
         double V_wrist_trans = 0.03;
         double V_wrist_trans_temp = 0.2;
         double V_wrist_basket = 0.65;
