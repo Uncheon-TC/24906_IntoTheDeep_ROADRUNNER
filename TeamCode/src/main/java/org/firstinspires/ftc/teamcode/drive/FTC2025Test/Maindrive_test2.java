@@ -382,6 +382,12 @@ public class Maindrive_test2 extends LinearOpMode {
                 V_wristL.setPosition(V_wrist_clip_pickup);
             }
 
+            if (gamepad2.right_stick_button){
+                resetEncoder(AL);
+                arm_target = 0;
+            }
+            if (rising_edge(currentGamepad2.dpad_left, previousGamepad2.dpad_left))
+
 
 
 
@@ -410,5 +416,10 @@ public class Maindrive_test2 extends LinearOpMode {
     private void angle_control(double target) {
         H_angleL.setPosition(target);
         H_angleR.setPosition(target);
+    }
+
+    private void resetEncoder(DcMotorEx AL) {
+        AL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
