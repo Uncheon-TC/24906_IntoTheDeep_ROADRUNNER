@@ -159,11 +159,11 @@ public class test extends LinearOpMode {
         double V_angle_backet =0.3;
 
 
-        int trans_status = 0;
+
 
         int chamber_status = 0;
 
-        int pick_status = 0;
+
 
         double H_wristL_Ready = 0.56;
         double H_wristR_Ready = 0.55;
