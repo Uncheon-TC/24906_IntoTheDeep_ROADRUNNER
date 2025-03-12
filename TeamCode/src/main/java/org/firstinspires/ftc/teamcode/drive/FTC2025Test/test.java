@@ -139,8 +139,8 @@ public class test extends LinearOpMode {
         int clip_pick = 0;
         int High_backet = 2700;
 
-        int High_chamber_hang_ready = 690;
-        int High_chamber_hang = 280;
+        int High_chamber_hang = 690;
+
 
         //TODO: make rigging mechanism and find tick
         int Low_rigging = 0;
@@ -375,7 +375,7 @@ public class test extends LinearOpMode {
             }
 
             if (rising_edge(currentGamepad1.b, previousGamepad1.b)) {
-                arm_target = High_chamber_hang_ready;
+                arm_target = High_chamber_hang;
                 V_angleL.setPosition(V_angle_hang);
                 V_angleR.setPosition(V_angle_hang);
                 V_wristL.setPosition(V_wrist_L_hang);
@@ -433,6 +433,7 @@ public class test extends LinearOpMode {
             }
 */
             if (rising_edge(currentGamepad2.a, previousGamepad2.a)) {
+
                 V_angleL.setPosition(V_angle_trans);
                 V_angleL.setPosition(V_angle_trans);
                 V_wristL.setPosition(V_wrist_L_trans);
