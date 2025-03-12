@@ -26,21 +26,28 @@ public class ENTIRE_CONFIGURE extends OpMode{
 
     public static double POS_V_grip = 0.5;
     public static double POS_V_wristL = 0.5;
+    public static double POS_V_wristR = 0.5;
     public static double POS_H_wristL = 0.5;
     public static double POS_H_wristR = 0.5;
     public static double POS_H_grip = 0.5;
-    public static double POS_H_length = 0.5;
+    public static double POS_H_lengthL = 0.5;
+    public static double POS_H_lengthR = 0.5;
     public static double POS_H_angle = 0.5;
     //public static double POS_H_angleR = 0.5;
+    public static double POS_V_angle = 0.5;
 
 
     //private Servo V_wristR;
     private Servo V_wristL;
-    private Servo H_length;
+    private Servo V_wristR;
+    private Servo H_lengthL;
+    private Servo H_lengthR;
     private Servo H_wristL;
     private Servo H_wristR;
     private Servo H_angleL;
     private Servo H_angleR;
+    private Servo V_angleL;
+    private Servo V_angleR;
     private Servo H_grip;
     private Servo V_grip;
 
@@ -62,7 +69,11 @@ public class ENTIRE_CONFIGURE extends OpMode{
 //
         //Servo V_wristR = hardwareMap.servo.get("V_wristR"); //Bucket Wrist right Servo
         V_wristL = hardwareMap.servo.get("V_wristL"); //Bucket Wrist left Servo
-        H_length = hardwareMap.servo.get("H_length"); //Slide right Servo
+        V_wristR = hardwareMap.servo.get("V_wristR");
+        V_angleR = hardwareMap.servo.get("V_angleR"); // Wrist right Servo
+        V_angleL = hardwareMap.servo.get("V_angleL");
+        H_lengthL = hardwareMap.servo.get("H_lengthL"); //Slide right Servo
+        H_lengthR = hardwareMap.servo.get("H_lengthR");
         H_wristR = hardwareMap.servo.get("H_wristR"); // Ground Gripper right Servo
         H_wristL = hardwareMap.servo.get("H_wristL"); // Ground Gripper Left Servo
         H_angleR = hardwareMap.servo.get("H_angleR"); // Wrist right Servo
@@ -71,10 +82,15 @@ public class ENTIRE_CONFIGURE extends OpMode{
         V_grip = hardwareMap.servo.get("V_grip"); //vertical grip wrist
 
         H_wristL.setDirection(Servo.Direction.REVERSE);
+        V_wristL.setDirection(Servo.Direction.REVERSE);
+
+        H_lengthL.setDirection(Servo.Direction.REVERSE);
 
         H_angleL.setDirection(Servo.Direction.REVERSE);
+        V_angleL.setDirection(Servo.Direction.REVERSE);
 
         POS_H_angle = H_angleL.getPosition();
+        POS_V_angle = V_angleL.getPosition();
 
     }
 
@@ -100,8 +116,13 @@ public class ENTIRE_CONFIGURE extends OpMode{
         H_grip.setPosition(POS_H_grip);
 
         V_wristL.setPosition(POS_V_wristL);
+        V_wristR.setPosition(POS_V_wristR);
 
-        H_length.setPosition(POS_H_length);
+        V_angleL.setPosition(POS_V_angle);
+        V_angleR.setPosition(POS_V_angle);
+
+        H_lengthL.setPosition(POS_H_lengthL);
+        H_lengthR.setPosition(POS_H_lengthR);
 
         H_angleL.setPosition(POS_H_angle);
         H_angleR.setPosition(POS_H_angle);

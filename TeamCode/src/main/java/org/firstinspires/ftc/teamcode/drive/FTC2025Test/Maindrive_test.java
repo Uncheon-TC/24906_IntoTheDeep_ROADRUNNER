@@ -37,6 +37,7 @@ public class Maindrive_test extends LinearOpMode {
     private DcMotorEx AR;
 
     private Servo V_wristL;
+    private Servo V_wristR;
     private Servo H_length;
     private Servo H_wristL;
     private Servo H_wristR;
@@ -79,13 +80,13 @@ public class Maindrive_test extends LinearOpMode {
         DcMotor ArmLeft = hardwareMap.dcMotor.get("AL");
         DcMotor ArmRight = hardwareMap.dcMotor.get("AR");*/
 
-        //V_wristR = hardwareMap.servo.get("V_wristR"); //Bucket Wrist right Servo
-        V_wristL = hardwareMap.servo.get("V_wristL"); //Bucket Wrist left Servo
-        H_length = hardwareMap.servo.get("H_length"); //Slide right Servo
-        H_wristR = hardwareMap.servo.get("H_wristR"); // Ground Gripper right Servo
-        H_wristL = hardwareMap.servo.get("H_wristL"); // Ground Gripper Left Servo
-        H_angleR = hardwareMap.servo.get("H_angleR"); // Wrist right Servo
-        H_angleL = hardwareMap.servo.get("H_angleL"); // Wrist left Servo
+        V_wristL = hardwareMap.servo.get("V_wristL"); //Bucket Wrist right Servo
+        V_wristR = hardwareMap.servo.get("V_wristR"); //Bucket Wrist left Servo
+        H_length = hardwareMap.servo.get("H_length"); //Horizon Slide Servo
+        H_wristL = hardwareMap.servo.get("H_wristL"); // Ground Gripper left Servo
+        H_wristR = hardwareMap.servo.get("H_wristR"); // Ground Gripper Servo
+        H_angleL = hardwareMap.servo.get("H_angleL"); // Wrist right Servo
+        H_angleR = hardwareMap.servo.get("H_angleR"); // Wrist left Servo
         H_grip = hardwareMap.servo.get("H_grip");
         V_grip = hardwareMap.servo.get("V_grip"); //vertical grip wrist
 
