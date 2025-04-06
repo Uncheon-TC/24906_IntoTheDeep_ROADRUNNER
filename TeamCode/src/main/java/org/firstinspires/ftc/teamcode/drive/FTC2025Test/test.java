@@ -144,7 +144,6 @@ public class test extends LinearOpMode {
 
         //TODO: make rigging mechanism and find tick
 
-
         double V_wrist_L_pick = 0.5;
         double V_wrist_R_pick = 0.5;
         double V_wrist_L_hang = 1;
