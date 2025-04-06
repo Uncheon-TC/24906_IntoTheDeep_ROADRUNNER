@@ -40,20 +40,21 @@ public class roadrunner_test extends LinearOpMode{
 
     private DcMotorEx AL;
     private DcMotorEx AR;
+
+    private Servo V_wristL;
+    private Servo V_wristR;
+    private Servo H_lengthL;
+    private Servo H_lengthR;
+    private Servo H_wristL;
+    private Servo H_wristR;
+    private Servo H_angleL;
+    private Servo H_angleR;
+    private Servo V_angleL;
+    private Servo V_angleR;
     private final double ticks_in_degree = 700 / 180.0;
 
     public class H_factor {
-        private Servo H_wristL;
-        private Servo H_wristR;
 
-        private Servo H_angleR;
-        private Servo H_angleL;
-
-        private Servo H_length;
-
-
-
-        private Servo V_wristL;
 
         //setting default var
         int target = 0;
@@ -71,62 +72,88 @@ public class roadrunner_test extends LinearOpMode{
 
         //TODO: find Horizon Griper value
 
-        int Low_basket = 2400;
-        int High_basket = 4200;
         int clip_pick = 0;
+        int High_backet = 2700;
 
-        int High_chamber = 2200;
-        int High_chamber_hang = 1100;
+        int High_chamber_hang = 640;
+
 
         //TODO: make rigging mechanism and find tick
-        int Low_rigging = 0;
-
-        double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.77;
-        double V_wrist_trans = 0.03;
-        double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.65;
 
 
-        int trans_status = 0;
+        double V_wrist_L_pick = 0.48;
+        double V_wrist_R_pick = 0.50;
+        double V_wrist_L_hang = 0.36;
+        double V_wrist_R_hang = 0.92;
+        double V_wrist_L_trans = 0.92;
+        double V_wrist_R_trans =0.94;
+        double V_wrist_L_backet = 0.45;
+        double V_wrist_R_backet = 0.45;
+
+        double V_angle_pick = 0.84;
+        double V_angle_up = 0.77;
+        double V_angle_hang = 0.22;
+        double V_angle_hang_down = 0.14;
+        double V_angle_backet =0.3;
+        double V_angle_trans_ready =0.54;
+        double V_angle_trans = 0.43;
+
+
 
         int chamber_status = 0;
 
-        int pick_status = 0;
 
-        double H_wristL_POS90 = 0.5;
-        double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.85;
-        double H_wristR_POS180 = 0.85;
+        double H_wristL_Ready = 0.45;
+        double H_wristR_Ready = 0.45;
 
-        double H_length_IN = 0.88;
-        double H_length_OUT = 0.5;
+        double H_wrist_L_hide = 0.5;
+        double H_wrist_R_hide = 0.49;
+        double H_wrist_L_trans = 1;
+        double H_wrist_R_trans = 1;
 
-        double H_angle_Ready = 0.3;
-        double H_angle_pickup = 0.16;
-        double H_angle_trans = 0.68;
+        double H_angleL_back = 0.47;
+        double H_angleR_back = 0.47;
+        double H_length_L_IN = 0.4;
+        double H_length_R_IN = 0.4;
+        double H_length_L_OUT = 0.1;
+        double H_length_R_OUT = 0.1;
+        double H_length_L_trans = 0.60;
+        double H_length_R_trans = 0.58;
+
+        double H_angle_Ready = 0.5;
+        double H_angle_pickup = 0.69;
+        double H_angle_hide = 0.76;
+        double H_angle_trans = 0.46;
 
         public H_factor(HardwareMap hardwareMap) {
-            H_wristL = hardwareMap.servo.get("H_wristL");
-            H_wristR = hardwareMap.servo.get("H_wristR");
-
             V_wristL = hardwareMap.servo.get("V_wristL");
-
+            V_wristR = hardwareMap.servo.get("V_wristR");//Bucket Wrist left Servo
+            V_angleL = hardwareMap.servo.get("V_angleL");
+            V_angleR = hardwareMap.servo.get("V_angleR");
+            H_angleR = hardwareMap.servo.get("H_angleR");
+            H_lengthL = hardwareMap.servo.get("H_lengthL");//Slide right Servo
+            H_lengthR = hardwareMap.servo.get("H_lengthR");
+            H_wristR = hardwareMap.servo.get("H_wristR"); // Ground Gripper right Servo
+            H_wristL = hardwareMap.servo.get("H_wristL"); // Ground Gripper Left Servo
             H_angleR = hardwareMap.servo.get("H_angleR"); // Wrist right Servo
             H_angleL = hardwareMap.servo.get("H_angleL"); // Wrist left Servo
 
-            H_length = hardwareMap.servo.get("H_length");
-
             H_wristL.setDirection(Servo.Direction.REVERSE);
+            V_wristL.setDirection(Servo.Direction.REVERSE);
+
+            H_lengthL.setDirection(Servo.Direction.REVERSE);
+
             H_angleL.setDirection(Servo.Direction.REVERSE);
+            V_angleL.setDirection(Servo.Direction.REVERSE);
         }
 
         public class H_out implements Action {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                H_length.setPosition(H_length_OUT);
+                H_lengthL.setPosition(H_length_L_OUT);
+                H_lengthR.setPosition(H_length_R_OUT);
                 return false;
             }
         }
@@ -138,7 +165,8 @@ public class roadrunner_test extends LinearOpMode{
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                H_length.setPosition(H_length_IN);
+                H_lengthL.setPosition(H_length_L_IN);
+                H_lengthR.setPosition(H_length_R_IN);
                 return false;
             }
         }
@@ -152,13 +180,15 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
-                    H_wristL.setPosition(H_wristL_POS90);  //trans
-                    H_wristR.setPosition(H_wristR_POS90);  //trans
+                H_lengthL.setPosition(H_length_L_OUT);
+                H_lengthR.setPosition(H_length_R_OUT);
+                H_angleL.setPosition(H_angle_Ready);
+                H_angleR.setPosition(H_angle_Ready);
 
-                    H_angleL.setPosition(H_angle_pickup);  //ready
-                    H_angleR.setPosition(H_angle_pickup);  //ready
 
-                    V_wristL.setPosition(V_wrist_trans);  //
+
+                H_wristL.setPosition(H_wristL_Ready);
+                H_wristR.setPosition(H_wristR_Ready);
 
                 return false;
             }
@@ -174,11 +204,21 @@ public class roadrunner_test extends LinearOpMode{
             public boolean run(@NonNull TelemetryPacket packet) {
 
 
-                H_angleL.setPosition(H_angle_trans);      //trans
-                H_angleR.setPosition(H_angle_trans);      //trans
+                H_angleL.setPosition(H_angle_trans);
+                H_angleR.setPosition(H_angle_trans);
 
-                H_wristL.setPosition(H_wristL_POS180);      //trans
-                H_wristR.setPosition(H_wristR_POS180);      //trans
+                H_wristL.setPosition(H_wrist_L_trans);
+                H_wristR.setPosition(H_wrist_R_trans);
+
+                H_lengthL.setPosition(H_length_L_IN);
+                H_lengthR.setPosition(H_length_R_IN);
+
+                V_angleL.setPosition(V_angle_trans);
+                V_angleR.setPosition(V_angle_trans);
+
+                V_wristL.setPosition(V_wrist_L_trans);
+                V_wristR.setPosition(V_wrist_R_trans);
+
 
                 return false;
             }
@@ -189,9 +229,6 @@ public class roadrunner_test extends LinearOpMode{
     }
 
     public class V_factor {
-        private DcMotorEx AL;
-        private DcMotorEx AR;
-        private Servo V_wristL;
 
         //setting default var
 
@@ -201,41 +238,59 @@ public class roadrunner_test extends LinearOpMode{
 
         //TODO: find Horizon Griper value
 
-        int Low_basket = 2400;
-        int High_basket = 4200;
         int clip_pick = 0;
+        int High_backet = 2300;
 
-        int High_chamber = 2200;
-        int High_chamber_hang = 1100;
+        int High_chamber_hang = 700;
+
 
         //TODO: make rigging mechanism and find tick
-        int Low_rigging = 0;
-
-        double V_wrist_outside_90degree = 0.78;
-        double V_wrist_clip_pickup = 0.77;
-        double V_wrist_trans = 0.07;
-        double V_wrist_trans_temp = 0.2;
-        double V_wrist_basket = 0.76;
 
 
-        int trans_status = 0;
+        double V_wrist_L_pick = 0.5;
+        double V_wrist_R_pick = 0.5;
+        double V_wrist_L_hang = 1;
+        double V_wrist_R_hang = 0.36;
+        double V_wrist_L_trans = 0.82;
+        double V_wrist_R_trans =0.83;
+        double V_wrist_L_backet = 0.45;
+        double V_wrist_R_backet = 0.45;
+
+        double V_angle_pick = 0.16;
+        double V_angle_up = 0.77;
+        double V_angle_hang = 0.8;
+        double V_angle_hang_down = 0.14;
+        double V_angle_backet =0.3;
+        double V_angle_trans_ready =0.54;
+        double V_angle_trans = 0.60;
+
+
 
         int chamber_status = 0;
 
-        int pick_status = 0;
 
-        double H_wristL_POS90 = 0.5;
-        double H_wristR_POS90 = 0.5;
 
-        double H_wristL_POS180 = 0.85;
-        double H_wristR_POS180 = 0.85;
+        double H_wristL_Ready = 0.45;
+        double H_wristR_Ready = 0.45;
 
-        double H_length_IN = 0.88;
-        double H_length_OUT = 0.5;
+        double H_wrist_L_hide = 0.5;
+        double H_wrist_R_hide = 0.5;
+        double H_wrist_L_trans = 1;
+        double H_wrist_R_trans = 1;
 
-        double H_angle_Ready = 0.3;
-        double H_angle_pickup = 0.16;
-        double H_angle_trans = 0.68;
+        double H_angleL_back = 0.47;
+        double H_angleR_back = 0.47;
+        double H_length_L_IN = 0.4;
+        double H_length_R_IN = 0.4;
+        double H_length_L_OUT = 0.32;
+        double H_length_R_OUT = 0.30;
+        double H_length_L_trans = 0.60;
+        double H_length_R_trans = 0.58;
+
+        double H_angle_Ready = 0.62;
+        double H_angle_pickup = 0.69;
+        double H_angle_hide = 0.76;
+        double H_angle_trans = 0.46;
 
 
         public V_factor(HardwareMap hardwareMap) {
@@ -262,7 +317,7 @@ public class roadrunner_test extends LinearOpMode{
                     init = true;
                 }
 
-                target = High_basket;
+                target = High_backet;
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
@@ -287,25 +342,45 @@ public class roadrunner_test extends LinearOpMode{
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(-1);
-                    AR.setPower(-1);
+                    AL.setTargetPosition(clip_pick);
+                    AR.setTargetPosition(clip_pick);
 
+                    AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    AR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // 목표 위치로 이동할 때의 전력 설정
+                    AL.setPower(1);
+                    AR.setPower(1);
+                    // 서보 모터 동시 동작 추가
+                    H_lengthL.setPosition(H_length_L_IN);
+                    H_lengthR.setPosition(H_length_R_IN);
+                    H_angleL.setPosition(H_angle_hide);
+                    H_angleR.setPosition(H_angle_hide);
+                    H_wristL.setPosition(H_wrist_L_hide);
+                    H_wristR.setPosition(H_wrist_R_hide);
+                    V_angleL.setPosition(V_angle_pick);
+                    V_angleR.setPosition(V_angle_pick);
+                    V_wristL.setPosition(V_wrist_L_pick);
+                    V_wristR.setPosition(V_wrist_R_pick);
                     init = true;
                 }
 
-                target = 0;
-
-
+                target =clip_pick;
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos >= 30) {
+
+                if (pos > clip_pick) {
                     return true;
                 } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
+                    // 현재 위치에 모터 고정
+                    AL.setTargetPosition((int)pos);
+                    AR.setTargetPosition((int)pos);
+
+                    AL.setPower(0.2);
+                    AR.setPower(0.2);
+
                     return false;
                 }
-
             }
         }
 
@@ -326,13 +401,13 @@ public class roadrunner_test extends LinearOpMode{
                     init = true;
                 }
 
-                target = High_chamber;
+                target = High_chamber_hang;
 
 
 
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos <= High_chamber) {
+                if (pos <= High_chamber_hang) {
                     return true;
                 } else {
                     AL.setPower(0);
@@ -347,22 +422,25 @@ public class roadrunner_test extends LinearOpMode{
             return new V_chamber_high();
         }
 
-        public class V_chamber_hang implements Action {
+/*        public class V_chamber_hang implements Action {
             private boolean init = false;
 
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!init) {
-                    AL.setPower(-1);
-                    AR.setPower(-1);
+                    AL.setPower(1);
+                    AR.setPower(1);
                     init = true;
                 }
 
                 target = High_chamber_hang;
 
+
+
+
                 double pos = AL.getCurrentPosition();
                 packet.put("AL_POS", pos);
-                if (pos >= High_chamber_hang) {
+                if (pos < High_chamber_hang) {
                     return true;
                 } else {
                     AL.setPower(0);
@@ -371,8 +449,49 @@ public class roadrunner_test extends LinearOpMode{
                 }
 
             }
-        }
+        }*/
+        public class V_chamber_hang implements Action {
+            private boolean init = false;
 
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    // RUN_TO_POSITION 모드로 설정
+                    AL.setTargetPosition(High_chamber_hang);
+                    AR.setTargetPosition(High_chamber_hang);
+
+                    AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    AR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // 목표 위치로 이동할 때의 전력 설정
+                    AL.setPower(1);
+                    AR.setPower(1);
+                    // 서보 모터 동시 동작 추가
+                    V_angleL.setPosition(V_angle_hang);
+                    V_angleR.setPosition(V_angle_hang);
+                    V_wristL.setPosition(V_wrist_L_hang);
+                    V_wristR.setPosition(V_wrist_R_hang);
+                    init = true;
+                }
+
+                target = High_chamber_hang;
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+
+                if (pos < High_chamber_hang) {
+                    return true;
+                } else {
+                    // 현재 위치에 모터 고정
+                    AL.setTargetPosition((int)pos);
+                    AR.setTargetPosition((int)pos);
+
+                    AL.setPower(0.2);
+                    AR.setPower(0.2);
+
+                    return false;
+                }
+            }
+        }
         public Action V_Chamber_Hang() {
             return new V_chamber_hang();
         }
@@ -382,7 +501,16 @@ public class roadrunner_test extends LinearOpMode{
 
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
-                V_wristL.setPosition(V_wrist_clip_pickup);
+                H_lengthL.setPosition(H_length_L_IN);
+                H_lengthR.setPosition(H_length_R_IN);
+                H_angleL.setPosition(H_angle_hide);
+                H_angleR.setPosition(H_angle_hide);
+                H_wristL.setPosition(H_wrist_L_hide);
+                H_wristR.setPosition(H_wrist_R_hide);
+                V_angleL.setPosition(V_angle_pick);
+                V_angleR.setPosition(V_angle_pick);
+                V_wristL.setPosition(V_wrist_L_pick);
+                V_wristR.setPosition(V_wrist_R_pick);
                 return false;
 
             }
@@ -401,13 +529,16 @@ public class roadrunner_test extends LinearOpMode{
 
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
-                V_wristL.setPosition(V_wrist_outside_90degree);
+                V_angleL.setPosition(V_angle_hang);
+                V_angleR.setPosition(V_angle_hang);
+                V_wristL.setPosition(V_wrist_L_hang);
+                V_wristR.setPosition(V_wrist_R_hang);
                 return false;
 
             }
         }
 
-        public Action V_wrist_Chamber_Hang() {
+        public Action chamber() {
             return new chamber_hang();
         }
 
@@ -420,11 +551,11 @@ public class roadrunner_test extends LinearOpMode{
         private Servo V_grip;
 
 
-        double V_Grip_OPEN = 0.35;
-        double V_Grip_CLOSE = 0.63;
+        double V_Grip_OPEN = 0.43;
+        double V_Grip_CLOSE = 0.65;
 
-        double H_Grip_OPEN = 0.55;
-        double H_Grip_CLOSE = 0.85;
+        double H_Grip_OPEN = 0.47;
+        double H_Grip_CLOSE = 0.25;
 
         public Grip_factor(HardwareMap hardwareMap) {
             H_grip = hardwareMap.servo.get("H_grip");
@@ -487,7 +618,7 @@ public class roadrunner_test extends LinearOpMode{
    @Override
     public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI / 2);
+       Pose2d initialPose = new Pose2d(-6.7, 62.4, Math.PI /2);
        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
        H_factor h_factor = new H_factor(hardwareMap);
        V_factor v_factor = new V_factor(hardwareMap);
@@ -505,78 +636,111 @@ public class roadrunner_test extends LinearOpMode{
 
 
 
-               .afterTime(0, v_factor.V_Chamber_High())
-               .afterTime(0, v_factor.V_wrist_Chamber_Hang())
-               .lineToY(36)
-               .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+
+
+
+
+               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+               //.stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0, v_factor.V_Chamber_Hang())
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .setTangent(Math.PI*3/2)
+               .splineToConstantHeading(new Vector2d(-2.5,27),Math.PI/2 )
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .waitSeconds(0.1)
-               .afterTime(0.5, v_factor.V_Ground())
+               .afterTime(0.3, v_factor.V_Ground())
 
 
 
 
-               .splineToConstantHeading(new Vector2d(-28,35),Math.PI/2)
-               .splineToConstantHeading(new Vector2d(-45, 12),  Math.PI / 2)
+
+
+               .splineToConstantHeading(new Vector2d(-30,37),Math.PI/2 )
+               .setTangent(Math.PI/2)
+               .splineToConstantHeading(new Vector2d(-43, 12),  Math.PI *3/ 2)
+               //.waitSeconds(0.1)
                //.waitSeconds(0.1)
                //.lineToY(53)
-               .splineToConstantHeading(new Vector2d(-45, 47),  Math.PI / 2)
+               .splineToConstantHeading(new Vector2d(-39, 49),  Math.PI *3/ 2)
+               .afterTime(0, v_factor.V_Ground())
+               //.waitSeconds(0.1)
+               //.lineToY(25)
+               .splineToConstantHeading(new Vector2d(-45, 16),  Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-53, 11),  Math.PI *3/ 2)
+
+
+
+               .splineToConstantHeading(new Vector2d(-48, 46),  Math.PI*3 / 2)
+
+               .splineToConstantHeading(new Vector2d(-51, 16),  Math.PI *3/ 2)
+
                //.setTangent(3 * Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-47,15),3 * Math.PI/2)
-               .splineToConstantHeading(new Vector2d(-60.5,12),Math.PI/2)
-              // .lineToY(53)
-               .splineToConstantHeading(new Vector2d(-60, 50),  Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-50, 46),  Math.PI / 2)
+
+               .splineToConstantHeading(new Vector2d(-62.8,12.5),Math.PI*3 / 2)
+               .waitSeconds(0.05)
+               .afterTime(0, v_factor.V_Ground())
+               .splineToConstantHeading(new Vector2d(-60.5,42),Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-40.5, 57.5), Math.PI *3/ 2)
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.4, v_factor.V_Chamber_Hang())
+
+
+               //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-4,21),Math.PI*3 / 2)
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0.6, v_factor.V_Ground())
+               .setTangent(Math.PI/2)
+
+
+               .splineTo(new Vector2d(-38, 60), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.4, v_factor.V_Chamber_Hang())
+
+               //.setTangent(Math.PI*3/2)
+               //.splineToConstantHeading(new Vector2d(-25,45),Math.PI/2)
+               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-5,40),Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-4,22),Math.PI*3 / 2)
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0.6, v_factor.V_Ground())
+               .setTangent(Math.PI/2)
+
+               .splineTo(new Vector2d(-39, 60), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.25, v_factor.V_Chamber_Hang())
+
+               //.setTangent(Math.PI*3/2)
+               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-5,40),Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-4,22),Math.PI *3/ 2)
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0.6, v_factor.V_Ground())
+               .setTangent(Math.PI/2)
+
+               .splineTo(new Vector2d(-40, 60), Math.PI / 2)
+               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.25, v_factor.V_Chamber_Hang())
+
+               //.setTangent(Math.PI*3/2)
+
+               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-5,40),Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-4,22),Math.PI *3/ 2)
+
+               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+               .afterTime(0.6, v_factor.V_Ground())
+               //.setTangent(Math.PI/2)
+               //.splineTo(new Vector2d(-40.5, 54.5), Math.PI / 2);
+       .splineToConstantHeading(new Vector2d(-42, 55), Math.PI *3/ 2);
+
+               //.splineToConstantHeading(new Vector2d(-60, 46),  Math.PI / 2)
                //.setTangent(Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
-               .waitSeconds(0.1)
-               .afterTime(0, v_factor.Clip_PICK())
-               .lineToY(60)
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .waitSeconds(0.4)
-               .afterTime(0.9, v_factor.V_Chamber_High())
-               .afterTime(2.5, v_factor.V_Chamber_Hang())
-               .setTangent(3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-3.5, 40.8,  Math.PI / 2), 3*Math.PI /2)
-               .waitSeconds(0.1)
-              // .lineToY(40)
-               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .waitSeconds(0.1)
-               .afterTime(0.1, v_factor.V_Ground())
-               .afterTime(0.1, v_factor.Clip_PICK())
-               .setTangent( Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
-               .waitSeconds(0.1)
-               .lineToY(60)
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .waitSeconds(0.4)
-               .afterTime(0.9, v_factor.V_Chamber_High())
-               .afterTime(2.5, v_factor.V_Chamber_Hang())
-               .setTangent(3 * Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-1, 40.9,  Math.PI / 2), 3*Math.PI / 2)
-               .waitSeconds(0.1)
-               //.lineToY(40)
-               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .waitSeconds(0.1)
-               .afterTime(1, v_factor.V_Ground())
-               .afterTime(1.3, v_factor.Clip_PICK())
-               .setTangent( Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(-41.2, 50, 3 * Math.PI / 2), Math.PI / 2)
-               .waitSeconds(0.1)
-               .lineToY(60)
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .waitSeconds(0.4)
-               .afterTime(0.9, v_factor.V_Chamber_High())
-               .afterTime(2.5, v_factor.V_Chamber_Hang())
-               .setTangent(3 *Math.PI / 2)
-               .splineToLinearHeading(new Pose2d(1, 40.9,  Math.PI / 2), 3*Math.PI / 2)
-               .waitSeconds(0.1)
-              // .lineToY(40)
-               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .waitSeconds(0.1)
-               .afterTime(0.2, v_factor.V_Ground());
+
+
 
 
 
@@ -616,7 +780,7 @@ public class roadrunner_test extends LinearOpMode{
        .splineToLinearHeading(new Pose2d(0, 35, Math.PI / 2), 3 * Math.PI / 2) //4th chamber
        */
        Action traj_END = traj.endTrajectory().fresh()
-                       .build();
+               .build();
 
 
                Actions.runBlocking(grip_factor.H_grip_CLOSE());
