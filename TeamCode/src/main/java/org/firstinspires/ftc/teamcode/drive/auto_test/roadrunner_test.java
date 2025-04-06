@@ -645,7 +645,7 @@ public class roadrunner_test extends LinearOpMode{
                .afterTime(0, v_factor.V_Chamber_Hang())
                .afterTime(0, grip_factor.V_grip_CLOSE())
                .setTangent(Math.PI*3/2)
-               .splineToConstantHeading(new Vector2d(-2.5,27),Math.PI/2 )
+               .splineToConstantHeading(new Vector2d(5,31),Math.PI/2 )
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.3, v_factor.V_Ground())
 
@@ -654,82 +654,84 @@ public class roadrunner_test extends LinearOpMode{
 
 
 
-               .splineToConstantHeading(new Vector2d(-30,37),Math.PI/2 )
+               .splineToConstantHeading(new Vector2d(-29,37),Math.PI/2 )
                .setTangent(Math.PI/2)
-               .splineToConstantHeading(new Vector2d(-43, 12),  Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-41, 12),  Math.PI *3/2)
                //.waitSeconds(0.1)
                //.waitSeconds(0.1)
                //.lineToY(53)
-               .splineToConstantHeading(new Vector2d(-39, 49),  Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-43, 53),  Math.PI *3/2)
                .afterTime(0, v_factor.V_Ground())
                //.waitSeconds(0.1)
                //.lineToY(25)
-               .splineToConstantHeading(new Vector2d(-45, 16),  Math.PI*3 / 2)
-               .splineToConstantHeading(new Vector2d(-53, 11),  Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-40, 16),  Math.PI *3/2)
+               .splineToConstantHeading(new Vector2d(-54, 11),  Math.PI *3/2)
 
 
 
-               .splineToConstantHeading(new Vector2d(-48, 46),  Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-57, 46),  Math.PI*3 / 2)
 
-               .splineToConstantHeading(new Vector2d(-51, 16),  Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-48, 16),  Math.PI *3/ 2)
 
                //.setTangent(3 * Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-50, 46),  Math.PI / 2)
 
-               .splineToConstantHeading(new Vector2d(-62.8,12.5),Math.PI*3 / 2)
-               .waitSeconds(0.05)
+               .splineToConstantHeading(new Vector2d(-63,12.5),Math.PI*3 / 2)
+               .waitSeconds(0.002)
                .afterTime(0, v_factor.V_Ground())
-               .splineToConstantHeading(new Vector2d(-60.5,42),Math.PI*3 / 2)
-               .splineToConstantHeading(new Vector2d(-40.5, 57.5), Math.PI *3/ 2)
+               //첫번째 잡기 위치 이동
+               .splineToConstantHeading(new Vector2d(-63,59.5),Math.PI/ 2)
+               //.splineToConstantHeading(new Vector2d(-60.5, 56), Math.PI *3/ 2)
                .afterTime(0, grip_factor.V_grip_CLOSE())
-               .afterTime(0.4, v_factor.V_Chamber_Hang())
-
+               .afterTime(0.1, v_factor.V_Chamber_Hang())
+               .setTangent(Math.PI*3/2)
 
                //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
-               .splineToConstantHeading(new Vector2d(-4,21),Math.PI*3 / 2)
+ //              .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
+               .splineTo(new Vector2d(0,27),Math.PI*3 / 2)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.6, v_factor.V_Ground())
                .setTangent(Math.PI/2)
 
 
-               .splineTo(new Vector2d(-38, 60), Math.PI / 2)
+               .splineTo(new Vector2d(-38, 58), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.2, grip_factor.V_grip_CLOSE())
                .afterTime(0.4, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)
                //.splineToConstantHeading(new Vector2d(-25,45),Math.PI/2)
                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-5,40),Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-4,22),Math.PI*3 / 2)
+
+       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-5,27),Math.PI*3 / 2)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.6, v_factor.V_Ground())
                .setTangent(Math.PI/2)
 
-               .splineTo(new Vector2d(-39, 60), Math.PI / 2)
+               .splineTo(new Vector2d(-39, 58), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.2, grip_factor.V_grip_CLOSE())
                .afterTime(0.25, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)
                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-5,40),Math.PI*3 / 2)
-               .splineToConstantHeading(new Vector2d(-4,22),Math.PI *3/ 2)
+       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI*3 / 2)
+               .splineToConstantHeading(new Vector2d(-10,27),Math.PI *3/ 2)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.6, v_factor.V_Ground())
                .setTangent(Math.PI/2)
 
-               .splineTo(new Vector2d(-40, 60), Math.PI / 2)
+               .splineTo(new Vector2d(-40, 58), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               .afterTime(0, grip_factor.V_grip_CLOSE())
+               .afterTime(0.2, grip_factor.V_grip_CLOSE())
                .afterTime(0.25, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)
 
                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-5,40),Math.PI *3/ 2)
-               .splineToConstantHeading(new Vector2d(-4,22),Math.PI *3/ 2)
+       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
+               .splineToConstantHeading(new Vector2d(-15,27),Math.PI *3/ 2)
 
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.6, v_factor.V_Ground())
