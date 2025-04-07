@@ -2,34 +2,29 @@ package org.firstinspires.ftc.teamcode.drive.auto_test;
 
 import androidx.annotation.NonNull;
 
-// RR-specific imports
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-
-// Non-RR imports
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AUTOhang", group = "Autonomous")
+@Autonomous(name = "AUTOhang2", group = "Autonomous")
 
-public class roadrunner_test extends LinearOpMode{
+public class roadrunner_test2 extends LinearOpMode{
 
     private PIDController controller;
 
@@ -218,6 +213,7 @@ public class roadrunner_test extends LinearOpMode{
 
                 V_wristL.setPosition(V_wrist_L_trans);
                 V_wristR.setPosition(V_wrist_R_trans);
+
 
 
                 return false;
@@ -645,7 +641,7 @@ public class roadrunner_test extends LinearOpMode{
                .afterTime(0, v_factor.V_Chamber_Hang())
                .afterTime(0, grip_factor.V_grip_CLOSE())
                .setTangent(Math.PI*3/2)
-               .splineToConstantHeading(new Vector2d(7.5,30),Math.PI/2 )
+               .splineToConstantHeading(new Vector2d(6,31),Math.PI/2 )
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.3, v_factor.V_Ground())
 
@@ -654,19 +650,19 @@ public class roadrunner_test extends LinearOpMode{
 
 
 
-               .splineToConstantHeading(new Vector2d(-25,37),Math.PI/2 )
+               .splineToConstantHeading(new Vector2d(-29,37),Math.PI/2 )
                .setTangent(Math.PI/2)
                .splineToConstantHeading(new Vector2d(-42, 12),  Math.PI *3/2)
-               //.waitSeconds(0.05)
+               .waitSeconds(0.1)
                //.waitSeconds(0.1)
                //.lineToY(53)
-               .splineToConstantHeading(new Vector2d(-43, 46),  Math.PI *3/2)
+               .splineToConstantHeading(new Vector2d(-43, 47),  Math.PI *3/2)
+               .afterTime(0, v_factor.V_Ground())
                //.waitSeconds(0.1)
                //.lineToY(25)
                .splineToConstantHeading(new Vector2d(-43, 20),  Math.PI *3/2)
                .splineToConstantHeading(new Vector2d(-54, 12),  Math.PI *3/2)
-               .waitSeconds(0.01)
-               .afterTime(0, v_factor.V_Ground())
+               .waitSeconds(0.1)
 
 
 
@@ -683,23 +679,24 @@ public class roadrunner_test extends LinearOpMode{
                //첫번째 잡기 위치 이동
                .splineToConstantHeading(new Vector2d(-63,59.5),Math.PI/ 2)
                //.splineToConstantHeading(new Vector2d(-60.5, 56), Math.PI *3/ 2)
-               .afterTime(0, grip_factor.V_grip_CLOSE())
-               .afterTime(0.1, v_factor.V_Chamber_Hang())
+               .afterTime(0, grip_factor.V_grip_CLOSE())//stopandadd로 수정
+               .afterTime(0, v_factor.V_Chamber_Hang())
                .setTangent(Math.PI*3/2)
 
                //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
  //              .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
+               //두번째걸기
                .splineTo(new Vector2d(0,27),Math.PI*3 / 2)
                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                .afterTime(0.6, v_factor.V_Ground())
                .setTangent(Math.PI/2)
 
+                //세번째잡으러오기
 
                .splineTo(new Vector2d(-38, 56), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.25, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .afterTime(0.25, v_factor.V_Chamber_Hang())
+               .afterTime(0.25, grip_factor.V_grip_CLOSE())
+               .afterTime(0.5, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)
                //.splineToConstantHeading(new Vector2d(-25,45),Math.PI/2)
@@ -713,8 +710,7 @@ public class roadrunner_test extends LinearOpMode{
 
                .splineTo(new Vector2d(-39, 58), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.2, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .afterTime(0.2, grip_factor.V_grip_CLOSE())
                .afterTime(0.25, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)
@@ -727,8 +723,7 @@ public class roadrunner_test extends LinearOpMode{
 
                .splineTo(new Vector2d(-40, 58), Math.PI / 2)
                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.2, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+               .afterTime(0.2, grip_factor.V_grip_CLOSE())
                .afterTime(0.25, v_factor.V_Chamber_Hang())
 
                //.setTangent(Math.PI*3/2)

@@ -147,14 +147,14 @@ public class test extends LinearOpMode {
         double V_wrist_L_pick = 0.5;
         double V_wrist_R_pick = 0.5;
         double V_wrist_L_hang = 1;
-        double V_wrist_R_hang = 0.36;
+        double V_wrist_R_hang = 0.37;
         double V_wrist_L_trans = 0.92;
         double V_wrist_R_trans =0.94;
         double V_wrist_L_backet = 0.53;
         double V_wrist_R_backet = 0.55;
 
         double V_angle_pick = 0.16;
-        double V_angle_up = 0.26;
+        double V_angle_up = 0.2;
         double V_angle_hang = 0.8;
         double V_angle_hang_down = 0.84;
         double V_angle_backet =0.70;
@@ -385,6 +385,13 @@ public class test extends LinearOpMode {
                 V_angleR.setPosition(V_angle_pick);
                 V_wristL.setPosition(V_wrist_L_pick);
                 V_wristR.setPosition(V_wrist_R_pick);
+                H_angleL.setPosition(H_angle_Ready+0.01);
+                H_angleR.setPosition(H_angle_Ready+0.01);
+
+
+
+                H_wristL.setPosition(H_wristL_Ready);
+                H_wristR.setPosition(H_wristR_Ready);
                 //HG_OPEN = true;
                 //VG_OPEN = false;
             }
@@ -454,6 +461,13 @@ public class test extends LinearOpMode {
                 V_wristL.setPosition(V_wrist_L_trans);
                 V_wristR.setPosition(V_wrist_R_trans);
                 V_grip.setPosition(V_Grip_OPEN);
+                H_angleL.setPosition(H_angle_Ready+0.01);
+                H_angleR.setPosition(H_angle_Ready+0.01);
+
+
+
+                H_wristL.setPosition(H_wristL_Ready);
+                H_wristR.setPosition(H_wristR_Ready);
             }
 
 
