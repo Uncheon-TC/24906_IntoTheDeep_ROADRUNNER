@@ -235,9 +235,9 @@ public class roadrunner_test2 extends LinearOpMode{
         //TODO: find Horizon Griper value
 
         int clip_pick = 0;
-        int High_backet = 2300;
+        int High_backet = 2450;
 
-        int High_chamber_hang = 700;
+        int High_chamber_hang = 800;
 
 
         //TODO: make rigging mechanism and find tick
@@ -245,8 +245,8 @@ public class roadrunner_test2 extends LinearOpMode{
 
         double V_wrist_L_pick = 0.5;
         double V_wrist_R_pick = 0.5;
-        double V_wrist_L_hang = 1;
-        double V_wrist_R_hang = 0.37;
+        double V_wrist_L_hang = 0.97;
+        double V_wrist_R_hang = 0.34;
         double V_wrist_L_trans = 0.82;
         double V_wrist_R_trans =0.83;
         double V_wrist_L_backet = 0.45;
@@ -254,7 +254,7 @@ public class roadrunner_test2 extends LinearOpMode{
 
         double V_angle_pick = 0.16;
         double V_angle_up = 0.77;
-        double V_angle_hang = 0.8;
+        double V_angle_hang = 0.82;
         double V_angle_hang_down = 0.14;
         double V_angle_backet =0.3;
         double V_angle_trans_ready =0.54;
@@ -631,10 +631,10 @@ public class roadrunner_test2 extends LinearOpMode{
        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
 
 
+               .splineToConstantHeading(new Vector2d(-36.7,32.4),Math.PI*5/4 )
+               .splineToConstantHeading(new Vector2d(-6.7,62.4),Math.PI*1/4 );
 
-
-
-
+/*
 
                //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
                //.stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))

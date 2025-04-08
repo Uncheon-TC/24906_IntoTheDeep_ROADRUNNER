@@ -137,17 +137,17 @@ public class test extends LinearOpMode {
 
 
         int clip_pick = 0;
-        int High_backet = 2300;
+        int High_backet = 2450;
 
-        int High_chamber_hang = 700;
+        int High_chamber_hang = 800;
 
 
         //TODO: make rigging mechanism and find tick
 
         double V_wrist_L_pick = 0.5;
         double V_wrist_R_pick = 0.5;
-        double V_wrist_L_hang = 1;
-        double V_wrist_R_hang = 0.37;
+        double V_wrist_L_hang = 0.97;
+        double V_wrist_R_hang = 0.34;
         double V_wrist_L_trans = 0.92;
         double V_wrist_R_trans =0.94;
         double V_wrist_L_backet = 0.53;
@@ -155,9 +155,9 @@ public class test extends LinearOpMode {
 
         double V_angle_pick = 0.16;
         double V_angle_up = 0.2;
-        double V_angle_hang = 0.8;
-        double V_angle_hang_down = 0.84;
-        double V_angle_backet =0.70;
+        double V_angle_hang = 0.82;
+        double V_angle_hang_down = 0.87;
+        double V_angle_backet =0.73;
         double V_angle_trans_ready =0.54;
         double V_angle_trans = 0.43;
 
