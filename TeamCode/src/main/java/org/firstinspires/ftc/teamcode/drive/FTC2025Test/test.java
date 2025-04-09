@@ -138,6 +138,8 @@ public class test extends LinearOpMode {
 
         int clip_pick = 0;
         int High_backet = 2450;
+        int liging = 2320;
+        int liging_down = 1550;
 
         int High_chamber_hang = 800;
 
@@ -156,7 +158,7 @@ public class test extends LinearOpMode {
         double V_angle_pick = 0.16;
         double V_angle_up = 0.2;
         double V_angle_hang = 0.82;
-        double V_angle_hang_down = 0.87;
+        double V_angle_hang_down = 0.85;
         double V_angle_backet =0.73;
         double V_angle_trans_ready =0.54;
         double V_angle_trans = 0.43;
@@ -327,10 +329,10 @@ public class test extends LinearOpMode {
 
             if (rising_edge(currentGamepad1.left_bumper, previousGamepad1.left_bumper)) {
                 H_grip.setPosition(H_Grip_CLOSE);
-                H_angleL.setPosition(H_angle_pickup+0.05);
-                H_angleR.setPosition(H_angle_pickup+0.05);
-                H_wristL.setPosition(H_wristL_Ready+0.03);
-                H_wristR.setPosition(H_wristR_Ready+0.03);
+                H_angleL.setPosition(H_angle_pickup+0.07);
+                H_angleR.setPosition(H_angle_pickup+0.07);
+                H_wristL.setPosition(H_wristL_Ready+0.05);
+                H_wristR.setPosition(H_wristR_Ready+0.05);
 
             }
 
@@ -454,6 +456,7 @@ public class test extends LinearOpMode {
 
             }
 */
+
             if (rising_edge(currentGamepad2.a, previousGamepad2.a)) {
                 arm_target = clip_pick;
                 V_angleL.setPosition(V_angle_trans);
@@ -461,13 +464,9 @@ public class test extends LinearOpMode {
                 V_wristL.setPosition(V_wrist_L_trans);
                 V_wristR.setPosition(V_wrist_R_trans);
                 V_grip.setPosition(V_Grip_OPEN);
-                H_angleL.setPosition(H_angle_Ready+0.01);
-                H_angleR.setPosition(H_angle_Ready+0.01);
 
 
 
-                H_wristL.setPosition(H_wristL_Ready);
-                H_wristR.setPosition(H_wristR_Ready);
             }
 
 
@@ -483,21 +482,11 @@ public class test extends LinearOpMode {
             }
 
             if (rising_edge(currentGamepad2.x, previousGamepad2.x)) {
+                arm_target = liging;
 
-                if (chamber_status == 0) {
 
-                   // arm_target = High_chamber;
 
-                    chamber_status = 1;
 
-                } else if (chamber_status == 1) {
-
-                    arm_target = clip_pick;
-                    V_angleL.setPosition(V_angle_trans);
-                    V_angleR.setPosition(V_angle_trans);
-                    chamber_status = 0;
-
-                }
 
             }
 
@@ -508,25 +497,20 @@ public class test extends LinearOpMode {
                 V_wristR.setPosition(V_wrist_R_hang);
 
             }
-
-            if (gamepad2.right_stick_button){
-                resetEncoder(AL);
-                arm_target = 0;
+            if (rising_edge(currentGamepad2.back, previousGamepad2.back)){
+                arm_target = AL.getCurrentPosition()-50;
             }
-            if (rising_edge(currentGamepad2.dpad_left, previousGamepad2.dpad_left))
+            if (gamepad2.ps){
+                arm_target = 0;
+                ArmPos = 0;
+            }
+            if (rising_edge(currentGamepad2.dpad_down, previousGamepad2.dpad_down))
             {
-                H_wristL_target = H_wristL.getPosition() - interval;
-                H_wristR_target = H_wristR.getPosition() + interval;
-
-                if (H_wristL_target < 0) {
-                    H_wristL_target = 0;
-                }
-
-                if (H_wristR_target > 1) {
-                    H_wristR_target = 1;
-                }
-
-                wrist_control(H_wristL_target, H_wristR_target);
+                arm_target = liging_down;
+            }
+            if (rising_edge(currentGamepad2.dpad_up, previousGamepad2.dpad_up))
+            { V_angleR.setPosition(V_angle_trans-0.04);
+                V_angleL.setPosition(V_angle_trans-0.04);
             }
 
 
@@ -537,6 +521,8 @@ public class test extends LinearOpMode {
             //telemetry settings
             telemetry.addData("ArmPos ", ArmPos);
             telemetry.addData("Target Pos ", arm_target);
+            telemetry.addData("Current Pos ", AL.getCurrentPosition());
+
             telemetry.addLine();
             //telemetry.addData("HG", HG_OPEN);
             //telemetry.addData("VG", VG_OPEN);
