@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.drive.auto_test;
 
 import androidx.annotation.NonNull;
 
+// RR-specific imports
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+
+// Non-RR imports
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -14,10 +17,10 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
@@ -417,34 +420,34 @@ public class AUTOHANG_V2 extends LinearOpMode{
             return new V_chamber_high();
         }
 
-/*        public class V_chamber_hang implements Action {
-            private boolean init = false;
+        /*        public class V_chamber_hang implements Action {
+                    private boolean init = false;
 
-            @Override
-            public boolean run (@NonNull TelemetryPacket packet) {
-                if (!init) {
-                    AL.setPower(1);
-                    AR.setPower(1);
-                    init = true;
-                }
+                    @Override
+                    public boolean run (@NonNull TelemetryPacket packet) {
+                        if (!init) {
+                            AL.setPower(1);
+                            AR.setPower(1);
+                            init = true;
+                        }
 
-                target = High_chamber_hang;
-
-
+                        target = High_chamber_hang;
 
 
-                double pos = AL.getCurrentPosition();
-                packet.put("AL_POS", pos);
-                if (pos < High_chamber_hang) {
-                    return true;
-                } else {
-                    AL.setPower(0);
-                    AR.setPower(0);
-                    return false;
-                }
 
-            }
-        }*/
+
+                        double pos = AL.getCurrentPosition();
+                        packet.put("AL_POS", pos);
+                        if (pos < High_chamber_hang) {
+                            return true;
+                        } else {
+                            AL.setPower(0);
+                            AR.setPower(0);
+                            return false;
+                        }
+
+                    }
+                }*/
         public class V_chamber_hang implements Action {
             private boolean init = false;
 
@@ -489,6 +492,52 @@ public class AUTOHANG_V2 extends LinearOpMode{
         }
         public Action V_Chamber_Hang() {
             return new V_chamber_hang();
+        }
+
+        public class V_chamber_down implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    // RUN_TO_POSITION 모드로 설정
+                    AL.setTargetPosition(High_chamber_hang);
+                    AR.setTargetPosition(High_chamber_hang);
+
+                    AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    AR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // 목표 위치로 이동할 때의 전력 설정
+                    AL.setPower(1);
+                    AR.setPower(1);
+                    // 서보 모터 동시 동작 추가
+                    V_angleL.setPosition(V_angle_hang+0.03);
+                    V_angleR.setPosition(V_angle_hang+0.03);
+                    V_wristL.setPosition(V_wrist_L_hang);
+                    V_wristR.setPosition(V_wrist_R_hang);
+                    init = true;
+                }
+
+                target = High_chamber_hang;
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+
+                if (pos < High_chamber_hang) {
+                    return true;
+                } else {
+                    // 현재 위치에 모터 고정
+                    AL.setTargetPosition((int)pos);
+                    AR.setTargetPosition((int)pos);
+
+                    AL.setPower(0.2);
+                    AR.setPower(0.2);
+
+                    return false;
+                }
+            }
+        }
+        public Action V_Chamber_Down() {
+            return new V_chamber_down();
         }
 
         public class clip_pick implements Action {
@@ -610,153 +659,24 @@ public class AUTOHANG_V2 extends LinearOpMode{
 
 
 
-   @Override
+    @Override
     public void runOpMode() throws InterruptedException {
 
-       Pose2d initialPose = new Pose2d(-4, 63, Math.PI /2);
-       MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-       H_factor h_factor = new H_factor(hardwareMap);
-       V_factor v_factor = new V_factor(hardwareMap);
-       Grip_factor grip_factor = new Grip_factor(hardwareMap);
+        Pose2d initialPose = new Pose2d(-4, 63, Math.PI /2);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        H_factor h_factor = new H_factor(hardwareMap);
+        V_factor v_factor = new V_factor(hardwareMap);
+        Grip_factor grip_factor = new Grip_factor(hardwareMap);
 
-       controller = new PIDController(p, i, d);
+        controller = new PIDController(p, i, d);
 
-       AL = hardwareMap.get(DcMotorEx.class, "AL");
-       AR = hardwareMap.get(DcMotorEx.class, "AR");
-       AR.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-
-       TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
+        AL = hardwareMap.get(DcMotorEx.class, "AL");
+        AR = hardwareMap.get(DcMotorEx.class, "AR");
+        AR.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
-
-
-
-
-               //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
-               //.stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0, v_factor.V_Chamber_Hang())
-               .afterTime(0, grip_factor.V_grip_CLOSE())
-               .setTangent(Math.PI*3/2)
-               .splineToConstantHeading(new Vector2d(-4,28),Math.PI*3/2 )
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0.2, v_factor.V_Ground())
-               .splineToConstantHeading(new Vector2d(-4,30),Math.PI/2 )
-
-
-
-
-
-               .splineToConstantHeading(new Vector2d(-27.5,30),Math.PI*4/4 )
-               //.setTangent(Math.PI*3/2)
-               .splineToConstantHeading(new Vector2d(-31,18),Math.PI*3/2)
-               .splineToConstantHeading(new Vector2d(-44,13),Math.PI*4/4 )
-               .setTangent(Math.PI/2)
-
-               //.splineToConstantHeading(new Vector2d(-43, 13),  Math.PI *3/2)
-               //.waitSeconds(0.01)
-               //.waitSeconds(0.1)
-               //.lineToY(53)
-               .splineToConstantHeading(new Vector2d(-44, 42),  Math.PI /2)
-               //.waitSeconds(0.1)
-               //.lineToY(25)
-               .splineToConstantHeading(new Vector2d(-41.5, 24),  Math.PI *3/2)
-               .splineToConstantHeading(new Vector2d(-53, 12),  Math.PI *2/2)
-               .setTangent(Math.PI/2)
-               //.waitSeconds(0.010)
-
-
-
-               .splineToConstantHeading(new Vector2d(-53, 41),  Math.PI / 2)
-
-               .splineToConstantHeading(new Vector2d(-51, 15.5),  Math.PI *3/ 2)
-
-
-               //.setTangent(3 * Math.PI / 2)
-               //.splineToConstantHeading(new Vector2d(-50, 46),  Math.PI / 2)
-
-
-               .splineToConstantHeading(new Vector2d(-62,12),Math.PI*2/ 2)
-               .setTangent(Math.PI/2)
-               //.waitSeconds(0.01)
-               //첫번째 잡기 위치 이동
-               .splineToConstantHeading(new Vector2d(-60,58.5),Math.PI/ 2)
-               //.splineToConstantHeading(new Vector2d(-60.5, 56), Math.PI *3/ 2)
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .afterTime(0.1, v_factor.V_Chamber_Hang())
-               .setTangent(Math.PI*3/2)
-
-               //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
- //              .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
-
-               .splineTo(new Vector2d(-2.5,32.5),Math.PI*3 / 2)
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0.5, v_factor.V_Ground())
-               .setTangent(Math.atan2(29.5,-37.5))
-
-
-               //.splineTo(new Vector2d(-38, 62), Math.PI / 2)
-               .splineToConstantHeading(new Vector2d(-39, 62), Math.atan2(29.5,-37.5))
-               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.25, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .afterTime(0.15, v_factor.V_Chamber_Hang())
-
-               //.setTangent(Math.PI*3/2)
-               //.splineToConstantHeading(new Vector2d(-25,45),Math.PI/2)
-               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-
-       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
-               .setTangent(Math.toRadians(180)+Math.atan2(30,-41))
-               .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-41))
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0.6, v_factor.V_Ground())
-               .setTangent( Math.atan2(29,-41))
-
-
-
-               .splineToConstantHeading(new Vector2d(-39, 62), Math.atan2(29,-41))
-               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.2, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .afterTime(0.15, v_factor.V_Chamber_Hang())
-
-               //.setTangent(Math.PI*3/2)
-               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI*3 / 2)
-               .setTangent(Math.toRadians(180)+Math.atan2(30,-41))
-               .splineToConstantHeading(new Vector2d(1.5,32),Math.toRadians(180)+Math.atan2(30,-41.5))
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0.6, v_factor.V_Ground())
-               .setTangent(Math.atan2(30,-41.5))
-
-
-
-               .splineToConstantHeading(new Vector2d(-39, 62), Math.atan2(30,-41.5))
-               //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
-               //.afterTime(0.2, grip_factor.V_grip_CLOSE())
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-               .afterTime(0.15, v_factor.V_Chamber_Hang())
-
-               //.setTangent(Math.PI*3/2)
-
-               //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
-       //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
-               .setTangent(Math.toRadians(180)+Math.atan2(30,-41.5))
-
-               .splineToConstantHeading(new Vector2d(1.5,32),Math.toRadians(180)+Math.atan2(30,-41.5))
-
-               .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-               .afterTime(0.6, v_factor.V_Ground())
-               //.setTangent(Math.PI/2)
-               //.splineTo(new Vector2d(-40.5, 54.5), Math.PI / 2);
-               .setTangent(Math.atan2(30,-41.5))
-               .splineToConstantHeading(new Vector2d(-39, 62), Math.atan2(30,-41.5));
-
-               //.splineToConstantHeading(new Vector2d(-60, 46),  Math.PI / 2)
-               //.setTangent(Math.PI / 2)
+        TrajectoryActionBuilder traj = drive.actionBuilder(initialPose)
 
 
 
@@ -764,10 +684,139 @@ public class AUTOHANG_V2 extends LinearOpMode{
 
 
 
-       // .lineToY(17)
-               //  .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
-               // .lineToY(55)
-               //    .lineToY(-10)
+                //.stopAndAdd(() -> Actions.runBlocking(v_factor.V_Chamber_Hang()))
+                //.stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0, v_factor.V_Chamber_Hang())
+                .afterTime(0, grip_factor.V_grip_CLOSE())
+                .setTangent(Math.PI*3/2)
+                .splineToConstantHeading(new Vector2d(-4,28),Math.PI*3/2 )
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.2, v_factor.V_Ground())
+                .splineToConstantHeading(new Vector2d(-4,30),Math.PI/2 )
+
+
+
+
+
+                .splineToConstantHeading(new Vector2d(-27.5,30),Math.PI*4/4 )
+                //.setTangent(Math.PI*3/2)
+                .splineToConstantHeading(new Vector2d(-31,18),Math.PI*3/2)
+                .splineToConstantHeading(new Vector2d(-44,13),Math.PI*4/4 )
+                .setTangent(Math.PI/2)
+
+                //.splineToConstantHeading(new Vector2d(-43, 13),  Math.PI *3/2)
+                //.waitSeconds(0.01)
+                //.waitSeconds(0.1)
+                //.lineToY(53)
+                .splineToConstantHeading(new Vector2d(-44, 42),  Math.PI /2)
+                //.waitSeconds(0.1)
+                //.lineToY(25)
+                .splineToConstantHeading(new Vector2d(-41.5, 24),  Math.PI *3/2)
+                .splineToConstantHeading(new Vector2d(-53, 12),  Math.PI *2/2)
+                .setTangent(Math.PI/2)
+                //.waitSeconds(0.010)
+
+
+
+                .splineToConstantHeading(new Vector2d(-53, 41),  Math.PI / 2)
+
+                .splineToConstantHeading(new Vector2d(-50, 15.5),  Math.PI *3/ 2)
+
+
+                //.setTangent(3 * Math.PI / 2)
+                //.splineToConstantHeading(new Vector2d(-50, 46),  Math.PI / 2)
+
+
+                .splineToConstantHeading(new Vector2d(-62,12),Math.PI*2/ 2)
+                .setTangent(Math.PI/2)
+                //.waitSeconds(0.01)
+                //첫번째 잡기 위치 이동
+                .splineToConstantHeading(new Vector2d(-60,59),Math.PI/ 2)
+                //.splineToConstantHeading(new Vector2d(-60.5, 56), Math.PI *3/ 2)
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .afterTime(0.1, v_factor.V_Chamber_Hang())
+                .setTangent(Math.PI*3/2)
+
+                //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
+                //              .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
+
+                .splineTo(new Vector2d(0,32.5),Math.PI*3 / 2)
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0, v_factor.V_Chamber_Down())
+                .afterTime(0.6, v_factor.V_Ground())
+                .setTangent(Math.atan2(29.5,-40.5))
+
+                //.splineTo(new Vector2d(-38, 62), Math.PI / 2)
+                .splineToConstantHeading(new Vector2d(-42, 62), Math.atan2(29.5,-42))
+                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+                //.afterTime(0.25, grip_factor.V_grip_CLOSE())
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .afterTime(0.15, v_factor.V_Chamber_Hang())
+
+                //.setTangent(Math.PI*3/2)
+                //.splineToConstantHeading(new Vector2d(-25,45),Math.PI/2)
+                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+
+                //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
+                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .afterTime(0, v_factor.V_Chamber_Down())
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.6, v_factor.V_Ground())
+
+                .setTangent( Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43))
+                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+                //.afterTime(0.2, grip_factor.V_grip_CLOSE())
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .afterTime(0.15, v_factor.V_Chamber_Hang())
+
+                //.setTangent(Math.PI*3/2)
+                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+                //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI*3 / 2)
+                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .afterTime(0, v_factor.V_Chamber_Down())
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.6, v_factor.V_Ground())
+                .setTangent(Math.atan2(30,-43.5))
+
+
+
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43))
+                //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
+                //.afterTime(0.2, grip_factor.V_grip_CLOSE())
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .afterTime(0.15, v_factor.V_Chamber_Hang())
+
+                //.setTangent(Math.PI*3/2)
+
+                //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
+                //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
+                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .afterTime(0, v_factor.V_Chamber_Down())
+
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.6, v_factor.V_Ground())
+                //.setTangent(Math.PI/2)
+                //.splineTo(new Vector2d(-40.5, 54.5), Math.PI / 2);
+                .setTangent(Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43));
+
+        //.splineToConstantHeading(new Vector2d(-60, 46),  Math.PI / 2)
+        //.setTangent(Math.PI / 2)
+
+
+
+
+
+
+
+        // .lineToY(17)
+        //  .splineToConstantHeading(new Vector2d(-61,10),Math.PI/2)
+        // .lineToY(55)
+        //    .lineToY(-10)
                /*
        .setTangent(3 * Math.PI / 2)
        .splineToLinearHeading(new Pose2d(-12, 35, Math.PI / 2), 3 * Math.PI / 2) //1st chamb
@@ -797,51 +846,51 @@ public class AUTOHANG_V2 extends LinearOpMode{
        .waitSeconds(0.5)
        .splineToLinearHeading(new Pose2d(0, 35, Math.PI / 2), 3 * Math.PI / 2) //4th chamber
        */
-       Action traj_END = traj.endTrajectory().fresh()
-               .build();
+        Action traj_END = traj.endTrajectory().fresh()
+                .build();
 
 
-               Actions.runBlocking(grip_factor.H_grip_CLOSE());
-               Actions.runBlocking(grip_factor.V_grip_CLOSE());
-               Actions.runBlocking(h_factor.H_IN());
+        Actions.runBlocking(grip_factor.H_grip_CLOSE());
+        Actions.runBlocking(grip_factor.V_grip_CLOSE());
+        Actions.runBlocking(h_factor.H_IN());
 
 
-       waitForStart();
+        waitForStart();
 
-       Actions.runBlocking(
-               new SequentialAction(
-                       traj.build(),
-
-
-
-
-
-                       traj_END
-               )
-       );
-
-       while (opModeIsActive()) {
-           controller.setPID(p, i, d);
-           int armPos = AL.getCurrentPosition();
-           double pid = controller.calculate(armPos, target);
-           double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
-
-           double power = pid + ff;
-
-           AL.setPower(power);
-           AR.setPower(power);
+        Actions.runBlocking(
+                new SequentialAction(
+                        traj.build(),
 
 
 
-           telemetry.addData("armpower ", power);
-           telemetry.addData("armtarget ", target);
-           telemetry.update();
-
-           if (isStopRequested()) return;
-       }
 
 
-   }
+                        traj_END
+                )
+        );
+
+        while (opModeIsActive()) {
+            controller.setPID(p, i, d);
+            int armPos = AL.getCurrentPosition();
+            double pid = controller.calculate(armPos, target);
+            double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+
+            double power = pid + ff;
+
+            AL.setPower(power);
+            AR.setPower(power);
+
+
+
+            telemetry.addData("armpower ", power);
+            telemetry.addData("armtarget ", target);
+            telemetry.update();
+
+            if (isStopRequested()) return;
+        }
+
+
+    }
 
 
 }

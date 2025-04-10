@@ -137,9 +137,9 @@ public class test extends LinearOpMode {
 
 
         int clip_pick = 0;
-        int High_backet = 2450;
+        int High_backet = 2470;
         int liging = 2320;
-        int liging_down = 1550;
+        int liging_down = 1650;
 
         int High_chamber_hang = 800;
 
@@ -159,7 +159,7 @@ public class test extends LinearOpMode {
         double V_angle_up = 0.2;
         double V_angle_hang = 0.82;
         double V_angle_hang_down = 0.85;
-        double V_angle_backet =0.73;
+        double V_angle_backet =0.72;
         double V_angle_trans_ready =0.54;
         double V_angle_trans = 0.43;
 
@@ -186,7 +186,7 @@ public class test extends LinearOpMode {
         double H_length_IN = 0.4;
         //double H_length_L_IN = 0.62;
         //double H_length_R_IN = 0.60;
-        double H_length_OUT = 0.1;
+        double H_length_OUT = 0.13;
         //double H_length_L_OUT = 0.32;
         //double H_length_R_OUT = 0.30;
         double H_length_L_trans = 0.60;
@@ -511,6 +511,7 @@ public class test extends LinearOpMode {
             if (rising_edge(currentGamepad2.dpad_up, previousGamepad2.dpad_up))
             { V_angleR.setPosition(V_angle_trans-0.04);
                 V_angleL.setPosition(V_angle_trans-0.04);
+                V_grip.setPosition(V_Grip_CLOSE);
             }
 
 
