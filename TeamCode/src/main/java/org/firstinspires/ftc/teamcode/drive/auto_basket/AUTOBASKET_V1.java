@@ -881,7 +881,7 @@ public class AUTOBASKET_V1 extends LinearOpMode {
                 .afterTime(0.0, v_factor.V_Basket())
                 .splineToLinearHeading(new Pose2d(53,56.5, Math.toRadians(225)),Math.toRadians(45))
                 .afterTime(0.75, v_factor.V_Angle())
-                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.5, 0.72, 0.53)))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 1, 0.72, 0.53)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()));
 
 
