@@ -731,7 +731,7 @@ public class AUTOHANG_V2 extends LinearOpMode{
                 .setTangent(Math.PI/2)
                 //.waitSeconds(0.01)
                 //첫번째 잡기 위치 이동
-                .splineToConstantHeading(new Vector2d(-60,59),Math.PI/ 2)
+                .splineToConstantHeading(new Vector2d(-60,60),Math.PI/ 2)
                 //.splineToConstantHeading(new Vector2d(-60.5, 56), Math.PI *3/ 2)
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
                 .afterTime(0.1, v_factor.V_Chamber_Hang())
@@ -740,14 +740,14 @@ public class AUTOHANG_V2 extends LinearOpMode{
                 //.splineTo(new Vector2d(-4, 18), Math.PI *3/ 2)
                 //              .splineToConstantHeading(new Vector2d(-5,36),Math.PI*3 / 2)
 
-                .splineTo(new Vector2d(0,32.5),Math.PI*3 / 2)
+                .splineTo(new Vector2d(1,32.5),Math.PI*3 / 2)
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                 .afterTime(0, v_factor.V_Chamber_Down())
                 .afterTime(0.6, v_factor.V_Ground())
-                .setTangent(Math.atan2(29.5,-40.5))
+                .setTangent(Math.atan2(29.5,-42))
 
                 //.splineTo(new Vector2d(-38, 62), Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(-42, 62), Math.atan2(29.5,-42))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(29.5,-42))
                 //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
                 //.afterTime(0.25, grip_factor.V_grip_CLOSE())
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
@@ -758,14 +758,14 @@ public class AUTOHANG_V2 extends LinearOpMode{
                 //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
 
                 //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
-                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
-                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .setTangent(Math.toRadians(180)+Math.atan2(30,-44))
+                .splineToConstantHeading(new Vector2d(3.5,32),Math.toRadians(180)+Math.atan2(30,-44.5))
                 .afterTime(0, v_factor.V_Chamber_Down())
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                 .afterTime(0.6, v_factor.V_Ground())
 
-                .setTangent( Math.atan2(30,-43))
-                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43))
+                .setTangent( Math.atan2(30,-44.5))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-44.5))
                 //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
                 //.afterTime(0.2, grip_factor.V_grip_CLOSE())
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
@@ -774,16 +774,16 @@ public class AUTOHANG_V2 extends LinearOpMode{
                 //.setTangent(Math.PI*3/2)
                 //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
                 //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI*3 / 2)
-                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
-                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .setTangent(Math.toRadians(180)+Math.atan2(30,-44.5))
+                .splineToConstantHeading(new Vector2d(3.5,32),Math.toRadians(180)+Math.atan2(30,-44.5))
                 .afterTime(0, v_factor.V_Chamber_Down())
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                 .afterTime(0.6, v_factor.V_Ground())
-                .setTangent(Math.atan2(30,-43.5))
+                .setTangent(Math.atan2(30,-44.5))
 
 
 
-                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-44.5))
                 //.splineToConstantHeading(new Vector2d(-40.5, 54.5), Math.PI *3/ 2)
                 //.afterTime(0.2, grip_factor.V_grip_CLOSE())
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
@@ -793,16 +793,16 @@ public class AUTOHANG_V2 extends LinearOpMode{
 
                 //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
                 //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
-                .setTangent(Math.toRadians(180)+Math.atan2(30,-43))
-                .splineToConstantHeading(new Vector2d(2,32),Math.toRadians(180)+Math.atan2(30,-43))
+                .setTangent(Math.toRadians(180)+Math.atan2(31,-44.5))
+                .splineToConstantHeading(new Vector2d(3.5,31),Math.toRadians(180)+Math.atan2(31,-44.5))
                 .afterTime(0, v_factor.V_Chamber_Down())
 
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
-                .afterTime(0.6, v_factor.V_Ground())
+                .afterTime(0.5, v_factor.V_Ground())
                 //.setTangent(Math.PI/2)
                 //.splineTo(new Vector2d(-40.5, 54.5), Math.PI / 2);
-                .setTangent(Math.atan2(30,-43))
-                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(30,-43));
+                .setTangent(Math.atan2(31,-44.5))
+                .splineToConstantHeading(new Vector2d(-41, 62), Math.atan2(31 ,-44.5));
 
         //.splineToConstantHeading(new Vector2d(-60, 46),  Math.PI / 2)
         //.setTangent(Math.PI / 2)
