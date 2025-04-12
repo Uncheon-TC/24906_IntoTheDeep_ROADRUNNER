@@ -138,7 +138,7 @@ public class test extends LinearOpMode {
 
         int clip_pick = 0;
         int High_backet = 2470;
-        int liging = 2320;
+        int liging = 2380;
         int liging_down = 1650;
 
         int High_chamber_hang = 800;

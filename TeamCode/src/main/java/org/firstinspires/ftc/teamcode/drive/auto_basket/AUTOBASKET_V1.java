@@ -305,6 +305,7 @@ public class AUTOBASKET_V1 extends LinearOpMode {
 
         int clip_pick = 0;
         int High_backet = 2470;
+        int parking = 350;
 
         int High_chamber_hang = 800;
 
@@ -435,6 +436,54 @@ public class AUTOBASKET_V1 extends LinearOpMode {
 
         public Action V_Basket() {
             return new V_basket();
+        }
+        public class V_parking implements Action {
+            private boolean init = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!init) {
+                    AL.setTargetPosition(parking);
+                    AR.setTargetPosition(parking);
+
+                    AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    AR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    // 목표 위치로 이동할 때의 전력 설정
+                    AL.setPower(1);
+                    AR.setPower(1);
+                    // 서보 모터 동시 동작 추가
+                    V_angleL.setPosition(0.69);
+                    V_angleR.setPosition(0.69);
+                    V_wristL.setPosition(0.33);
+                    V_wristR.setPosition(0.33);
+
+
+                    init = true;
+                }
+
+                target = parking;
+                double pos = AL.getCurrentPosition();
+                packet.put("AL_POS", pos);
+
+                if (pos < parking) {
+                    return true;
+                } else {
+                    // 현재 위치에 모터 고정
+                    AL.setTargetPosition((int) pos);
+                    AR.setTargetPosition((int) pos);
+
+                    AL.setPower(0.2);
+                    AR.setPower(0.2);
+
+                    return false;
+                }
+
+            }
+        }
+
+        public Action V_Parking() {
+            return new V_parking();
         }
 
         public class V_angle implements Action {
@@ -613,54 +662,6 @@ public class AUTOBASKET_V1 extends LinearOpMode {
 
                         }
                     }*/
-            public class V_chamber_hang implements Action {
-                private boolean init = false;
-
-                @Override
-                public boolean run(@NonNull TelemetryPacket packet) {
-                    if (!init) {
-                        // RUN_TO_POSITION 모드로 설정
-                        AL.setTargetPosition(High_backet);
-                        AR.setTargetPosition(High_backet);
-
-                        AL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        AR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                        // 목표 위치로 이동할 때의 전력 설정
-                        AL.setPower(1);
-                        AR.setPower(1);
-                        // 서보 모터 동시 동작 추가
-                        V_angleL.setPosition(0.73);
-                        V_angleR.setPosition(0.73);
-                        V_wristL.setPosition(0.53);
-                        V_wristR.setPosition(0.55);
-                        init = true;
-                    }
-
-                    target = High_backet;
-                    double pos = AL.getCurrentPosition();
-                    packet.put("AL_POS", pos);
-
-                    if (pos < High_backet) {
-                        return true;
-                    } else {
-                        // 현재 위치에 모터 고정
-                        AL.setTargetPosition((int) pos);
-                        AR.setTargetPosition((int) pos);
-
-                        AL.setPower(0.2);
-                        AR.setPower(0.2);
-
-                        return false;
-                    }
-
-                }
-            }
-
-
-            public Action V_Chamber_Hang() {
-                return new V_chamber_hang();
-            }
 
             public class clip_pick implements Action {
                 private boolean init = false;
@@ -762,6 +763,10 @@ public class AUTOBASKET_V1 extends LinearOpMode {
     public class Grip_factor {
         private Servo H_grip;
         private Servo V_grip;
+        private Servo H_wristL;
+        private Servo H_wristR;
+        private Servo H_angleL;
+        private Servo H_angleR;
 
 
         double V_Grip_OPEN = 0.43;
@@ -777,6 +782,10 @@ public class AUTOBASKET_V1 extends LinearOpMode {
         public Grip_factor(HardwareMap hardwareMap) {
             H_grip = hardwareMap.servo.get("H_grip");
             V_grip = hardwareMap.servo.get("V_grip");
+            H_wristR = hardwareMap.servo.get("H_wristR"); // Ground Gripper right Servo
+            H_wristL = hardwareMap.servo.get("H_wristL"); // Ground Gripper Left Servo
+            H_angleR = hardwareMap.servo.get("H_angleR"); // Wrist right Servo
+            H_angleL = hardwareMap.servo.get("H_angleL"); // Wrist left Servo
         }
 
         public class V_grip_close implements Action {
@@ -811,8 +820,8 @@ public class AUTOBASKET_V1 extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 H_grip.setPosition(H_Grip_CLOSE);
-                H_angleL.setPosition(H_angle_pickup + 0.07);
-                H_angleR.setPosition(H_angle_pickup + 0.07);
+                H_angleL.setPosition(H_angle_pickup + 0.09);
+                H_angleR.setPosition(H_angle_pickup + 0.09);
                 H_wristL.setPosition(H_wristL_Ready + 0.05);
                 H_wristR.setPosition(H_wristR_Ready + 0.05);
                 return false;
@@ -862,27 +871,77 @@ public class AUTOBASKET_V1 extends LinearOpMode {
                 .afterTime(0.0, v_factor.V_Basket())
                 .afterTime(0.75, v_factor.V_Angle())
                 .setTangent(Math.toRadians(330))
-                .splineToLinearHeading(new Pose2d(53,57, Math.toRadians(225)),Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(53,57.7, Math.toRadians(225)),Math.toRadians(330))
                 .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.5, 0.72, 0.53)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
                 .afterTime(0.5, v_factor.V_Ground())
                 .afterTime(0.6, h_factor.H_OUT())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(50,49.5,Math.toRadians(270)),Math.toRadians(270) )
+                .splineToLinearHeading(new Pose2d(50.2,49.5,Math.toRadians(270)),Math.toRadians(270) )
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.67,0.48,0.13,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.67,0.48,0.13,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.4,0.97,0.4,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.4,0.97,0.4,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+                .setTangent(Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(53,57.7, Math.toRadians(225)),Math.toRadians(45))
+                .afterTime(0.75, v_factor.V_Angle())
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.5, 0.72, 0.53)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.5, v_factor.V_Ground())
+                .afterTime(0.6, h_factor.H_OUT())
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60,49.5,Math.toRadians(270)),Math.toRadians(270) )
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.48,0.13,0.5)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.48,0.13,0.5)))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.41,1,0.4,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.4,0.97,0.4,0.5)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.4,0.97,0.4,0.5)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.41,1,0.4,0.5)))
-                .setTangent(Math.toRadians(45))
-                .afterTime(0.0, v_factor.V_Basket())
-                .splineToLinearHeading(new Pose2d(53,56.5, Math.toRadians(225)),Math.toRadians(45))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(53,57.7, Math.toRadians(225)),Math.toRadians(90))
                 .afterTime(0.75, v_factor.V_Angle())
-                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 1, 0.72, 0.53)))
-                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()));
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.5, 0.72, 0.53)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.5, v_factor.V_Ground())
+                .afterTime(0.6, h_factor.H_OUT())
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(57,46,Math.toRadians(320)),Math.toRadians(270) )
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.48,0.13,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.48,0.13,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.41,0.97,0.4,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.41,0.97,0.4,0.5)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
+                .setTangent(Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(53,57.7, Math.toRadians(225)),Math.toRadians(45))
+                .afterTime(0.75, v_factor.V_Angle())
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.5, 0.72, 0.53)))
+                .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))
+                .afterTime(0.5, v_factor.V_Ground())
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.48,0.4,0.5)))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(53,10, Math.toRadians(0)),Math.toRadians(270))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(17,10, Math.toRadians(0)),Math.toRadians(180))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Parking()))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 5, 0.69, 0.38)));
+
+
+
+
+
+
 
 
 
