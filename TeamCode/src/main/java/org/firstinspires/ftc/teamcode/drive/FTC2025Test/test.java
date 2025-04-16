@@ -195,7 +195,7 @@ public class test extends LinearOpMode {
         double H_angle_Ready = 0.50;
         double H_angle_pickup = 0.68;
         double H_angle_hide = 0.76;
-        double H_angle_trans = 0.41;
+        double H_angle_trans = 0.48;
 
         double H_wristL_target = 0;
         double H_wristR_target = 0;
