@@ -845,8 +845,8 @@ public class AUTOHANG_V2 extends LinearOpMode{
 
                 //.splineTo(new Vector2d(-4, 17), Math.PI *3/ 2)
                 //        .splineToConstantHeading(new Vector2d(-5,28),Math.PI *3/ 2)
-                .setTangent(Math.toRadians(180)+Math.atan2(34,-45.5))
-                .splineToConstantHeading(new Vector2d(5.5,29),Math.toRadians(180)+Math.atan2(34,-45.5))
+                .setTangent(Math.toRadians(180)+Math.atan2(33.5,-45))
+                .splineToConstantHeading(new Vector2d(5,29.5),Math.toRadians(180)+Math.atan2(33.5,-45))
                 //.stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1, 0.1, 0.85, 0.98, 0.33)))
 
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_OPEN()))

@@ -2,32 +2,28 @@ package org.firstinspires.ftc.teamcode.drive.auto_basket;
 
 import androidx.annotation.NonNull;
 
-// RR-specific imports
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-
-// Non-RR imports
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "AUTObasket_v1", group = "Autonomous")
+@Autonomous(name = "AUTObasket_v2", group = "Autonomous")
 
-public class AUTOBASKET_V1 extends LinearOpMode {
+public class AUTOBASKET_V2 extends LinearOpMode {
 
     private PIDController controller;
 
@@ -86,8 +82,8 @@ public class AUTOBASKET_V1 extends LinearOpMode {
         double V_wrist_R_pick = 0.5;
         double V_wrist_L_hang = 0.98;
         double V_wrist_R_hang = 0.33;
-        double V_wrist_L_trans = 0.97;
-        double V_wrist_R_trans =0.97;
+        double V_wrist_L_trans = 0.95;
+        double V_wrist_R_trans =0.95;
         double V_wrist_L_backet = 0.53;
         double V_wrist_R_backet = 0.55;
 
@@ -110,7 +106,7 @@ public class AUTOBASKET_V1 extends LinearOpMode {
 
         double H_wrist_L_hide = 0.5;
         double H_wrist_R_hide = 0.5;
-        double H_wrist_L_trans = 0.94;
+        double H_wrist_L_trans = 0.96;
         double H_wrist_R_trans = 0.96;
 
         double H_angleL_back = 0.47;
@@ -131,7 +127,7 @@ public class AUTOBASKET_V1 extends LinearOpMode {
         double H_angle_Ready = 0.50;
         double H_angle_pickup = 0.68;
         double H_angle_hide = 0.76;
-        double H_angle_trans = 0.48;
+        double H_angle_trans = 0.5;
 
         double H_wristL_target = 0;
         double H_wristR_target = 0;
@@ -376,8 +372,8 @@ public class AUTOBASKET_V1 extends LinearOpMode {
         double V_wrist_R_pick = 0.5;
         double V_wrist_L_hang = 0.9;
         double V_wrist_R_hang = 0.34;
-        double V_wrist_L_trans = 0.97;
-        double V_wrist_R_trans = 0.99;
+        double V_wrist_L_trans = 0.95;
+        double V_wrist_R_trans = 0.95;
         double V_wrist_L_backet = 0.53;
         double V_wrist_R_backet = 0.55;
 
@@ -935,10 +931,10 @@ public class AUTOBASKET_V1 extends LinearOpMode {
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.78,0.48,0.13,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
-                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.44,0.97)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.5,0.96,0.43,0.7)))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.42,0.95)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.50,0.96,0.43,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
                 .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
                 .setTangent(Math.toRadians(45))
@@ -949,16 +945,16 @@ public class AUTOBASKET_V1 extends LinearOpMode {
                 .afterTime(0.5, v_factor.V_Ground())
                 .afterTime(0.6, h_factor.H_OUT())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(59.5,51,Math.toRadians(271)),Math.toRadians(270) )
+                .splineToLinearHeading(new Pose2d(60,51,Math.toRadians(271)),Math.toRadians(270) )
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.68,0.46,0.13,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.78,0.48,0.13,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.78,0.48,0.13,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
-                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.44,0.97)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.50,0.96,0.43,0.7)))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.42,0.95)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.50,0.96,0.43,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
                 .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
                 .setTangent(Math.toRadians(90))
@@ -976,10 +972,10 @@ public class AUTOBASKET_V1 extends LinearOpMode {
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_CLOSE()))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.78,0.48,0.13,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(h_factor.H_UP()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
-                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.44,0.97)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.50,0.96,0.43,0.7)))
+                .stopAndAdd(() -> Actions.runBlocking(v_factor.holdLiftPower(0.1,0.5,0.42,0.97)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.V_grip_CLOSE()))
-                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.48,0.97,0.43,0.3)))
+                .stopAndAdd(() -> Actions.runBlocking(h_factor.holdHPosition(0.50,0.96,0.43,0.3)))
                 .stopAndAdd(() -> Actions.runBlocking(grip_factor.H_grip_OPEN()))
                 .stopAndAdd(() -> Actions.runBlocking(v_factor.V_Basket()))
                 .setTangent(Math.toRadians(45))
