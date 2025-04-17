@@ -141,7 +141,7 @@ public class test extends LinearOpMode {
         int liging = 2380;
         int liging_down = 1650;
 
-        int High_chamber_hang = 800;
+        int High_chamber_hang = 810;
 
 
         //TODO: make rigging mechanism and find tick
@@ -161,7 +161,7 @@ public class test extends LinearOpMode {
         double V_angle_hang_down = 0.85;
         double V_angle_backet =0.72;
         double V_angle_trans_ready =0.54;
-        double V_angle_trans = 0.465;
+        double V_angle_trans = 0.41;
 
 
 
@@ -169,8 +169,8 @@ public class test extends LinearOpMode {
 
 
 
-        double H_wristL_Ready = 0.45+0.03;
-        double H_wristR_Ready = 0.45+0.03;
+        double H_wristL_Ready = 0.46;
+        double H_wristR_Ready = 0.46;
 
         double H_wrist_L_hide = 0.5;
         double H_wrist_R_hide = 0.5;
@@ -195,7 +195,7 @@ public class test extends LinearOpMode {
         double H_angle_Ready = 0.50;
         double H_angle_pickup = 0.68;
         double H_angle_hide = 0.76;
-        double H_angle_trans = 0.48;
+        double H_angle_trans = 0.41;
 
         double H_wristL_target = 0;
         double H_wristR_target = 0;
@@ -320,8 +320,10 @@ public class test extends LinearOpMode {
             }
 
             if (rising_edge(currentGamepad1.x, previousGamepad1.x)) {
-                    H_angleL.setPosition(H_angle_pickup);
-                H_angleR.setPosition(H_angle_pickup);
+                    H_angleL.setPosition(H_angle_pickup+0.04);
+                H_angleR.setPosition(H_angle_pickup+0.04);
+                H_wristL.setPosition(H_wristL_Ready);
+                H_wristR.setPosition(H_wristR_Ready);
 
 
 
@@ -329,17 +331,17 @@ public class test extends LinearOpMode {
 
             if (rising_edge(currentGamepad1.left_bumper, previousGamepad1.left_bumper)) {
                 H_grip.setPosition(H_Grip_CLOSE);
-                H_angleL.setPosition(H_angle_pickup+0.07);
-                H_angleR.setPosition(H_angle_pickup+0.07);
-                H_wristL.setPosition(H_wristL_Ready+0.05);
-                H_wristR.setPosition(H_wristR_Ready+0.05);
+                H_angleL.setPosition(H_angle_pickup+0.1);
+                H_angleR.setPosition(H_angle_pickup+0.1);
+                H_wristL.setPosition(H_wristL_Ready+0.02);
+                H_wristR.setPosition(H_wristR_Ready+0.02);
 
             }
 
             if (rising_edge(currentGamepad1.right_bumper, previousGamepad1.right_bumper)) {
                 H_grip.setPosition(H_Grip_OPEN);
-                H_angleL.setPosition(H_angle_pickup);
-                H_angleR.setPosition(H_angle_pickup);
+                H_angleL.setPosition(H_angle_pickup+0.04);
+                H_angleR.setPosition(H_angle_pickup+0.04);
                 H_wristL.setPosition(H_wristL_Ready);
                 H_wristR.setPosition(H_wristR_Ready);
 
