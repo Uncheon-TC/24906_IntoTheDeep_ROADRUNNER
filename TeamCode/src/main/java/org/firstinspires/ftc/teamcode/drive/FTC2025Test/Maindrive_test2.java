@@ -47,7 +47,7 @@ public class Maindrive_test2 extends LinearOpMode {
         double power = 0.7;
         double step = 0.02;
         double servoDown = 0.0;   // 0도
-        double servoUp = 0.35;    // 60도 정도
+        double servoUp = 0.36;    // 60도 정도
         boolean shooterOn = false;
         boolean intakeOn = false;
 
