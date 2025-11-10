@@ -93,10 +93,11 @@ public class Maindrive_test2 extends LinearOpMode {
             rotX *= 1.1;
 
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = ((rotY + rotX - rx) / denominator) * slow;
-            double backLeftPower = ((rotY - rotX - rx) / denominator) * slow;
-            double frontRightPower = ((rotY - rotX + rx) / denominator) * slow;
-            double backRightPower = ((rotY + rotX + rx) / denominator) * slow;
+            double frontLeftPower = ((rotY + rotX + rx) / denominator) * slow;
+            double backLeftPower = ((rotY - rotX + rx) / denominator) * slow;
+            double frontRightPower = ((rotY - rotX - rx) / denominator) * slow;
+            double backRightPower = ((rotY + rotX - rx) / denominator) * slow;
+
 
             FrontLeftMotor.setPower(frontLeftPower);
             BackLeftMotor.setPower(backLeftPower);
@@ -131,16 +132,16 @@ public class Maindrive_test2 extends LinearOpMode {
 
 
             if (gamepad1.right_bumper) {
-                servo_R.setPosition(1.5);
+                servo_R.setPosition(0.1);
             } else {
-                servo_R.setPosition(3);
+                servo_R.setPosition(0.5);
             }
 
 
             if (gamepad1.left_bumper) {
-                servo_L.setPosition(1.5);
+                servo_L.setPosition(0.1);
             } else {
-                servo_L.setPosition(3);
+                servo_L.setPosition(0.5);
             }
 
 
