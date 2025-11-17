@@ -99,7 +99,7 @@ public class Maindrive_test2 extends LinearOpMode {
 
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
             double slow = 1 - (0.8 * gamepad1.right_trigger);
 
             if (gamepad1.options) imu.resetYaw();
@@ -110,10 +110,11 @@ public class Maindrive_test2 extends LinearOpMode {
             rotX *= 1.1;
 
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            FrontLeftMotor.setPower((rotY + rotX + rx) / denominator * slow);
-            BackLeftMotor.setPower((rotY - rotX + rx) / denominator * slow);
-            FrontRightMotor.setPower((rotY - rotX - rx) / denominator * slow);
-            BackRightMotor.setPower((rotY + rotX - rx) / denominator * slow);
+            FrontLeftMotor.setPower((rotY + rotX - rx) / denominator * slow);
+            BackLeftMotor.setPower((rotY - rotX - rx) / denominator * slow);
+            FrontRightMotor.setPower((rotY - rotX + rx) / denominator * slow);
+            BackRightMotor.setPower((rotY + rotX + rx) / denominator * slow);
+
 
             if (rising_edge(currentGamepad1.dpad_up, previousGamepad1.dpad_up))
                 power = Math.min(1.0, power + step);
